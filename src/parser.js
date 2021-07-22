@@ -24,11 +24,13 @@ const canAddTokenToEndOfSubRegion = (subRegion, currentToken, { impliedHundreds 
   if (!prevToken) return true;
   if (
     prevToken.type === TOKEN_TYPE.MAGNITUDE &&
-    currentToken.type === TOKEN_TYPE.UNIT
+    currentToken.type === TOKEN_TYPE.UNIT &&
+    NUMBER[prevToken.lowerCaseValue] < 1000
   ) return true;
   if (
     prevToken.type === TOKEN_TYPE.MAGNITUDE &&
-    currentToken.type === TOKEN_TYPE.TEN
+    currentToken.type === TOKEN_TYPE.TEN &&
+    NUMBER[prevToken.lowerCaseValue] < 1000
   ) return true;
   if (
     impliedHundreds &&
@@ -51,10 +53,10 @@ const canAddTokenToEndOfSubRegion = (subRegion, currentToken, { impliedHundreds 
     prevToken.type === TOKEN_TYPE.TEN &&
     currentToken.type === TOKEN_TYPE.UNIT
   ) return true;
-  if (
+  /*if (
     prevToken.type === TOKEN_TYPE.MAGNITUDE &&
     currentToken.type === TOKEN_TYPE.MAGNITUDE
-  ) return true;
+  ) return (prevToken.lowerCaseValue !== 'soixante' && prevToken.lowerCaseValue !== 'vingt' && prevToken.lowerCaseValue !== 'cent');*/
   if (
     !impliedHundreds &&
     prevToken.type === TOKEN_TYPE.TEN &&
@@ -246,3 +248,4 @@ export default (text, options) => {
   const regions = matchRegions(tokens, options);
   return regions;
 };
+

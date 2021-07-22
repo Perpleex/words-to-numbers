@@ -3,114 +3,194 @@ import { expect } from 'chai';
 import wtn from '../';
 const { it } = global;
 
-it('one hundred', () => {
-  expect(wtn('one hundred')).to.equal(100);
+
+it('quarante six millions', () => {
+  expect(wtn('quarante six millions')).to.equal(46000000);
 });
 
-it('one hundred two', () => {
-  expect(wtn('one hundred two')).to.equal(102);
+it('cent', () => {
+  expect(wtn('cent')).to.equal(100);
 });
 
-it('one hundred and five', () => {
-  expect(wtn('one hundred and five')).to.equal(105);
+it('cent soixante dix', () => {
+  expect(wtn('cent soixante dix')).to.equal(170);
 });
 
-it('one hundred and twenty five', () => {
-  expect(wtn('one hundred and twenty five')).to.equal(125);
+it('quarante six million', () => {
+  expect(wtn('quarante six million')).to.equal(46000000);
 });
 
-it('four thousand and thirty', () => {
-  expect(wtn('four thousand and thirty')).to.equal(4030);
+it('un milliard deux cent trente million dix huit mille six', () => {
+  expect(wtn('un milliard deux cent trente million dix huit mille six')).to.equal(1230018006);
 });
 
-it('six million five thousand and two', () => {
-  expect(wtn('six million five thousand and two')).to.equal(6005002);
+
+it('deux cent million', () => {
+  expect(wtn('deux cent million')).to.equal(200000000);
 });
 
-it('a thousand one hundred and eleven', () => {
-  expect(wtn('a thousand one hundred and eleven')).to.equal(1111);
+it('deux cent deux million', () => {
+  expect(wtn('deux cent deux million')).to.equal(202000000);
 });
 
-it('sixty nine', () => {
-  expect(wtn('sixty nine')).to.equal(69);
+it('deux cent mille', () => {
+  expect(wtn('deux cent mille')).to.equal(200000);
 });
 
-it('twenty thousand five hundred and sixty nine', () => {
-  expect(wtn('twenty thousand five hundred and sixty nine')).to.equal(20569);
+it('deux cent neuf mille', () => {
+  expect(wtn('deux cent neuf mille')).to.equal(209000);
 });
 
-it('five quintillion', () => {
-  expect(wtn('five quintillion')).to.equal(5000000000000000000);
+it('deux cent dix neuf mille', () => {
+  expect(wtn('deux cent dix neuf mille')).to.equal(219000);
 });
 
-it('one-hundred', () => {
-  expect(wtn('one-hundred')).to.equal(100);
+it('dix sept', () => {
+  expect(wtn('dix sept')).to.equal(17);
 });
 
-it('one-hundred and five', () => {
-  expect(wtn('one-hundred and five')).to.equal(105);
+it('vingt et un', () => {
+  expect(wtn('vingt et un')).to.equal(21);
 });
 
-it('one-hundred and twenty-five', () => {
-  expect(wtn('one-hundred and twenty-five')).to.equal(125);
+it('vingt trois', () => {
+  expect(wtn('vingt trois')).to.equal(23);
 });
 
-it('four-thousand and thirty', () => {
-  expect(wtn('four-thousand and thirty')).to.equal(4030);
+it('cent deux', () => {
+  expect(wtn('cent deux')).to.equal(102);
 });
 
-it('six-million five-thousand and two', () => {
-  expect(wtn('six-million five-thousand and two')).to.equal(6005002);
+it('quatre vingt un', () => {
+  expect(wtn('quatre vingt un')).to.equal(81);
 });
 
-it('a thousand, one-hundred and eleven', () => {
-  expect(wtn('a thousand, one-hundred and eleven')).to.equal(1111);
+it('quatre-vingt-un', () => {
+  expect(wtn('quatre-vingt-un')).to.equal(81);
 });
 
-it('twenty-thousand, five-hundred and sixty-nine', () => {
-  expect(wtn('twenty-thousand, five-hundred and sixty-nine')).to.equal(20569);
+it('quatre vingt dix', () => {
+  expect(wtn('quatre vingt dix')).to.equal(90);
 });
 
-it('there were twenty-thousand, five-hundred and sixty-nine X in the five quintillion Y', () => {
-  expect(wtn('there were twenty-thousand, five-hundred and sixty-nine X in the five quintillion Y'))
+it('quatre-vingt-dix', () => {
+  expect(wtn('quatre vingt dix')).to.equal(90);
+});
+
+it('nonante', () => {
+  expect(wtn('nonante')).to.equal(90);
+});
+
+it('nonante cinq', () => {
+  expect(wtn('nonante cinq')).to.equal(95);
+});
+
+it('soixante dix', () => {
+  expect(wtn('soixante dix')).to.equal(70);
+});
+
+it('soixante et onze', () => {
+  expect(wtn('soixante et onze')).to.equal(71);
+});
+
+it('quatre vingt onze', () => {
+  expect(wtn('quatre vingt onze')).to.equal(91);
+});
+
+it('cent cinq', () => {
+  expect(wtn('cent cinq')).to.equal(105);
+});
+
+it('cent vingt cinq', () => {
+  expect(wtn('cent vingt cinq')).to.equal(125);
+});
+
+it('quatre mille trente', () => {
+  expect(wtn('quatre mille trente')).to.equal(4030);
+});
+
+it('six million cinq mille deux', () => {
+  expect(wtn('six million cinq mille deux')).to.equal(6005002);
+});
+
+it('mille cent onze', () => {
+  expect(wtn('mille cent onze')).to.equal(1111);
+});
+
+it('soixante neuf', () => {
+  expect(wtn('soixante neuf')).to.equal(69);
+});
+
+it('douze mille nonante cinq', () => {
+  expect(wtn('douze mille nonante cinq')).to.equal(12095);
+});
+
+it('vingt mille cinq cent soixante neuf', () => {
+  expect(wtn('vingt mille cinq cent soixante neuf')).to.equal(20569);
+});
+
+it('cinq quintillion', () => {
+  expect(wtn('cinq quintillion')).to.equal(5000000000000000000000000000000);
+});
+
+it('cent mille', () => {
+  expect(wtn('cent mille')).to.equal(100000);
+});
+
+it('dix mille', () => {
+  expect(wtn('dix mille')).to.equal(10000);
+});
+
+it('dix neuf mille', () => {
+  expect(wtn('dix neuf mille')).to.equal(19000);
+});
+
+it('vingt neuf mille', () => {
+  expect(wtn('vingt neuf mille')).to.equal(29000);
+});
+
+it('seize mille', () => {
+  expect(wtn('seize mille')).to.equal(16000);
+});
+
+it('there were vingt mille cinq cent soixante neuf X in the cinq quintillion six Y', () => {
+  expect(wtn('there were vingt mille cinq cent soixante neuf X in the cinq quintillion six Y'))
   .to
-  .equal('there were 20569 X in the 5000000000000000000 Y');
+  .equal('there were 20569 X in the 5e+30 Y');
 });
 
-it('one two three', () => {
-  expect(wtn('one two three')).to.equal('1 2 3');
+it('there were trente mille cinq cent soixante neuf X in the cinq quintillion Y', () => {
+  expect(wtn('there were trente mille cinq cent soixante neuf X in the cinq quintillion Y'))
+  .to
+  .equal('there were 30569 X in the 5e+30 Y');
 });
 
-it('test one two three test', () => {
-  expect(wtn('test one two three test')).to.equal('test 1 2 3 test');
+it('un deux trois', () => {
+  expect(wtn('un deux trois')).to.equal('1 2 3');
 });
 
-it('won huntred', () => {
-  expect(wtn('won huntred', {fuzzy: true})).to.equal(100);
+it('test un deux trois test', () => {
+  expect(wtn('test un deux trois test')).to.equal('test 1 2 3 test');
 });
 
-it('tu thousant and faav', () => {
-  expect(wtn('too thousant and fiev', {fuzzy: true})).to.equal(2005);
+it('quarante deux virgule cinq', () => {
+  expect(wtn('quarante deux virgule cinq')).to.equal(42.5);
 });
 
-it('tree millyon sefen hunderd ant twinty sex', () => {
-  expect(wtn('tree millyon sefen hunderd and twinty sex', {fuzzy: true})).to.equal(3000726);
+it('quarante deux point cinq', () => {
+  expect(wtn('quarante deux point cinq')).to.equal(42.5);
 });
 
-it('forty two point five', () => {
-  expect(wtn('forty two point five')).to.equal(42.5);
+it('dix virgule cinq', () => {
+  expect(wtn('dix virgule cinq')).to.equal(10.5);
 });
 
-it('ten point five', () => {
-  expect(wtn('ten point five')).to.equal(10.5);
-});
-
-it('three point one four one five nine two six', () => {
-  expect(wtn('three point one four one five nine two six')).to.equal(3.1415926);
+it('trois virgule un quatre un cinq neuf deux six', () => {
+  expect(wtn('trois virgule un quatre un cinq neuf deux six')).to.equal(3.1415926);
 });
 
 /* testing for ordinal numbers */
-
+/*
 it('first', () => {
   expect(wtn('first')).to.equal(1);
 });
@@ -301,7 +381,7 @@ it('Dot two Dot', () => {
 
 it('seventeen dot two four dot twelve dot five', () => {
   expect(wtn('seventeen dot two four dot twelve dot five')).to.eq('17.24 dot 12.5');
-});
+});*/
 
 // these dont work below fml
 

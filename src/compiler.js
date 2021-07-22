@@ -3,6 +3,7 @@ import { TOKEN_TYPE, NUMBER } from './constants';
 
 const getNumber = region => {
   let sum = 0;
+  let lastMagnitudeResult;
   let decimalReached = false;
   let decimalUnits = [];
   region.subRegions.forEach((subRegion) => {
@@ -21,6 +22,21 @@ const getNumber = region => {
       case TOKEN_TYPE.HUNDRED: {
         subRegionSum = 1;
         const tokensCount = tokens.length;
+        if ( tokensCount === 1 && tokens[0].type === TOKEN_TYPE.MAGNITUDE && sum !== 0 && NUMBER[tokens[0].lowerCaseValue] > 999) {
+          if (!lastMagnitudeResult){
+            sum *= NUMBER[tokens[0].lowerCaseValue];
+            subRegionSum = 0;
+            lastMagnitudeResult = sum;
+          }
+          else {
+            const localDelta = sum - lastMagnitudeResult;
+            subRegionSum = (localDelta) * NUMBER[tokens[0].lowerCaseValue] - localDelta;
+            sum += subRegionSum;
+            subRegionSum = 0;
+            lastMagnitudeResult = sum;
+          }
+          break;
+        }
         tokens.reduce((acc, token, i) => {
           if (token.type === TOKEN_TYPE.HUNDRED) {
             let tokensToAdd = tokensCount - 1 ? tokens.slice(i + 1) : [];
@@ -41,9 +57,19 @@ const getNumber = region => {
             tokens[i - 1].type === TOKEN_TYPE.TEN &&
             tokens[i - 2].type === TOKEN_TYPE.HUNDRED
           ) return acc;
+          /*if (token.type === TOKEN_TYPE.UNIT && sum > 0){
+            let tempSum = sum;
+            sum = 0;
+            return acc.concat({ token, numberValue: NUMBER[token.lowerCaseValue] + tempSum });
+          }*/
           return acc.concat({ token, numberValue: NUMBER[token.lowerCaseValue] });
-        }, []).forEach(({ numberValue }) => {
-          subRegionSum *= numberValue;
+        }, []).forEach(({ token, numberValue }, index, accArray) => {
+          if (index > 0 && accArray[index - 1].type !== TOKEN_TYPE.UNIT && token.type === TOKEN_TYPE.UNIT){
+            subRegionSum += numberValue;
+          }
+          else {
+            subRegionSum *= numberValue;
+          }
         });
         break;
       }
