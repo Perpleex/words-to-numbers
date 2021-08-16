@@ -28,13 +28,16 @@ var canAddTokenToEndOfSubRegion = function canAddTokenToEndOfSubRegion(subRegion
 
   var prevToken = tokens[0];
   if (!prevToken) return true;
-  if (prevToken.type === _constants.TOKEN_TYPE.MAGNITUDE && currentToken.type === _constants.TOKEN_TYPE.UNIT) return true;
-  if (prevToken.type === _constants.TOKEN_TYPE.MAGNITUDE && currentToken.type === _constants.TOKEN_TYPE.TEN) return true;
+  if (prevToken.type === _constants.TOKEN_TYPE.MAGNITUDE && currentToken.type === _constants.TOKEN_TYPE.UNIT && _constants.NUMBER[prevToken.lowerCaseValue] < 1000) return true;
+  if (prevToken.type === _constants.TOKEN_TYPE.MAGNITUDE && currentToken.type === _constants.TOKEN_TYPE.TEN && _constants.NUMBER[prevToken.lowerCaseValue] < 1000) return true;
   if (impliedHundreds && subRegion.type === _constants.TOKEN_TYPE.MAGNITUDE && prevToken.type === _constants.TOKEN_TYPE.TEN && currentToken.type === _constants.TOKEN_TYPE.UNIT) return true;
   if (impliedHundreds && subRegion.type === _constants.TOKEN_TYPE.MAGNITUDE && prevToken.type === _constants.TOKEN_TYPE.UNIT && currentToken.type === _constants.TOKEN_TYPE.TEN) return true;
   if (prevToken.type === _constants.TOKEN_TYPE.TEN && currentToken.type === _constants.TOKEN_TYPE.UNIT) return true;
   if (!impliedHundreds && prevToken.type === _constants.TOKEN_TYPE.TEN && currentToken.type === _constants.TOKEN_TYPE.UNIT) return true;
-  if (prevToken.type === _constants.TOKEN_TYPE.MAGNITUDE && currentToken.type === _constants.TOKEN_TYPE.MAGNITUDE) return true;
+  /*if (
+    prevToken.type === TOKEN_TYPE.MAGNITUDE &&
+    currentToken.type === TOKEN_TYPE.MAGNITUDE
+  ) return (prevToken.lowerCaseValue !== 'soixante' && prevToken.lowerCaseValue !== 'vingt' && prevToken.lowerCaseValue !== 'cent');*/
   if (!impliedHundreds && prevToken.type === _constants.TOKEN_TYPE.TEN && currentToken.type === _constants.TOKEN_TYPE.TEN) return false;
   if (impliedHundreds && prevToken.type === _constants.TOKEN_TYPE.TEN && currentToken.type === _constants.TOKEN_TYPE.TEN) return true;
   return false;

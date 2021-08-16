@@ -21,80 +21,64 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var UNIT = exports.UNIT = {
   zero: 0,
-  first: 1,
-  one: 1,
-  second: 2,
-  two: 2,
-  third: 3,
-  thirteenth: 13,
-  thirteen: 13,
-  three: 3,
-  fourth: 4,
-  fourteenth: 14,
-  fourteen: 14,
-  four: 4,
-  fifteenth: 15,
-  fifteen: 15,
-  fifth: 5,
-  five: 5,
-  sixth: 6,
-  sixteenth: 16,
-  sixteen: 16,
+  un: 1,
+  douze: 12,
+  deux: 2,
+  treize: 13,
+  trois: 3,
+  quatorze: 14,
+  quatre: 4,
+  quinze: 15,
+  cinq: 5,
+  seize: 16,
   six: 6,
-  seventeenth: 17,
-  seventeen: 17,
-  seventh: 7,
-  seven: 7,
-  eighteenth: 18,
-  eighteen: 18,
-  eighth: 8,
-  eight: 8,
-  nineteenth: 19,
-  nineteen: 19,
-  ninth: 9,
-  nine: 9,
-  tenth: 10,
-  ten: 10,
-  eleventh: 11,
-  eleven: 11,
-  twelfth: 12,
-  twelve: 12,
-  a: 1
+  sept: 7,
+  huit: 8,
+  neuf: 9,
+  onze: 11
 };
 
 var TEN = exports.TEN = {
-  twenty: 20,
-  twentieth: 20,
-  thirty: 30,
-  thirtieth: 30,
-  forty: 40,
-  fortieth: 40,
-  fifty: 50,
-  fiftieth: 50,
-  sixty: 60,
-  sixtieth: 60,
-  seventy: 70,
-  seventieth: 70,
-  eighty: 80,
-  eightieth: 80,
-  ninety: 90,
-  ninetieth: 90
+  dix: 10,
+  //  vingt: 20,
+  trente: 30,
+  quarante: 40,
+  cinquante: 50,
+  //  soixante: 60,
+  septante: 70,
+  octante: 80,
+  nonante: 90
 };
 
 var MAGNITUDE = exports.MAGNITUDE = {
-  hundred: 100,
-  hundredth: 100,
-  thousand: 1000,
+  vingt: 20,
+  soixante: 60,
+  cent: 100,
+  cents: 100,
+  mille: 1000,
+  milles: 1000,
   million: 1000000,
-  billion: 1000000000,
-  trillion: 1000000000000,
-  quadrillion: 1000000000000000,
-  quintillion: 1000000000000000000,
-  sextillion: 1000000000000000000000,
-  septillion: 1000000000000000000000000,
-  octillion: 1000000000000000000000000000,
-  nonillion: 1000000000000000000000000000000,
-  decillion: 1000000000000000000000000000000000
+  millions: 1000000,
+  milliard: 1000000000,
+  milliards: 1000000000,
+  billion: 1000000000000,
+  billions: 1000000000000,
+  trillion: 1000000000000000000,
+  trillions: 1000000000000000000,
+  quadrillion: 1000000000000000000000000,
+  quadrillions: 1000000000000000000000000,
+  quintillion: 1000000000000000000000000000000,
+  quintillions: 1000000000000000000000000000000,
+  sextillion: 1000000000000000000000000000000000000,
+  sextillions: 1000000000000000000000000000000000000,
+  septillion: 1000000000000000000000000000000000000000000,
+  septillions: 1000000000000000000000000000000000000000000,
+  octillion: 1000000000000000000000000000000000000000000000000,
+  octillions: 1000000000000000000000000000000000000000000000000,
+  nonillion: 1000000000000000000000000000000000000000000000000000000,
+  nonillions: 1000000000000000000000000000000000000000000000000000000,
+  decillion: 1000000000000000000000000000000000000000000000000000000000000,
+  decillions: 1000000000000000000000000000000000000000000000000000000000000
 };
 
 var NUMBER = exports.NUMBER = (0, _extends3.default)({}, UNIT, TEN, MAGNITUDE);
@@ -105,8 +89,8 @@ var MAGNITUDE_KEYS = exports.MAGNITUDE_KEYS = (0, _keys2.default)(MAGNITUDE);
 
 var NUMBER_WORDS = exports.NUMBER_WORDS = [].concat((0, _toConsumableArray3.default)(UNIT_KEYS), (0, _toConsumableArray3.default)(TEN_KEYS), (0, _toConsumableArray3.default)(MAGNITUDE_KEYS));
 
-var JOINERS = exports.JOINERS = ['and'];
-var DECIMALS = exports.DECIMALS = ['point', 'dot'];
+var JOINERS = exports.JOINERS = ['et'];
+var DECIMALS = exports.DECIMALS = ['point', 'virgule'];
 
 var PUNCTUATION = exports.PUNCTUATION = ['.', ',', '\\', '#', '!', '$', '%', '^', '&', '/', '*', ';', ':', '{', '}', '=', '-', '_', '`', '~', '(', ')', ' '];
 

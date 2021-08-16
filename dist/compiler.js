@@ -20,6 +20,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var getNumber = function getNumber(region) {
   var sum = 0;
+  var lastMagnitudeResult = void 0;
   var decimalReached = false;
   var decimalUnits = [];
   region.subRegions.forEach(function (subRegion) {
@@ -42,6 +43,20 @@ var getNumber = function getNumber(region) {
           var _ret = function () {
             subRegionSum = 1;
             var tokensCount = tokens.length;
+            if (tokensCount === 1 && tokens[0].type === _constants.TOKEN_TYPE.MAGNITUDE && sum !== 0 && _constants.NUMBER[tokens[0].lowerCaseValue] > 999) {
+              if (!lastMagnitudeResult) {
+                sum *= _constants.NUMBER[tokens[0].lowerCaseValue];
+                subRegionSum = 0;
+                lastMagnitudeResult = sum;
+              } else {
+                var localDelta = sum - lastMagnitudeResult;
+                subRegionSum = localDelta * _constants.NUMBER[tokens[0].lowerCaseValue] - localDelta;
+                sum += subRegionSum;
+                subRegionSum = 0;
+                lastMagnitudeResult = sum;
+              }
+              return 'break';
+            }
             tokens.reduce(function (acc, token, i) {
               if (token.type === _constants.TOKEN_TYPE.HUNDRED) {
                 var _ret2 = function () {
@@ -63,11 +78,21 @@ var getNumber = function getNumber(region) {
               }
               if (i > 0 && tokens[i - 1].type === _constants.TOKEN_TYPE.HUNDRED) return acc;
               if (i > 1 && tokens[i - 1].type === _constants.TOKEN_TYPE.TEN && tokens[i - 2].type === _constants.TOKEN_TYPE.HUNDRED) return acc;
+              /*if (token.type === TOKEN_TYPE.UNIT && sum > 0){
+                let tempSum = sum;
+                sum = 0;
+                return acc.concat({ token, numberValue: NUMBER[token.lowerCaseValue] + tempSum });
+              }*/
               return acc.concat({ token: token, numberValue: _constants.NUMBER[token.lowerCaseValue] });
-            }, []).forEach(function (_ref) {
+            }, []).forEach(function (_ref, index, accArray) {
+              var token = _ref.token;
               var numberValue = _ref.numberValue;
 
-              subRegionSum *= numberValue;
+              if (index > 0 && accArray[index - 1].type !== _constants.TOKEN_TYPE.UNIT && token.type === _constants.TOKEN_TYPE.UNIT) {
+                subRegionSum += numberValue;
+              } else {
+                subRegionSum *= numberValue;
+              }
             });
             return 'break';
           }();
