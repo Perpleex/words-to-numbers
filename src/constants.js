@@ -27,6 +27,7 @@ export const TEN = {
 //  soixante: 60,
   septante: 70,
   octante: 80,
+  huitante: 80,
   nonante: 90
 };
 
@@ -70,7 +71,7 @@ export const MAGNITUDE_KEYS = Object.keys(MAGNITUDE);
 export const NUMBER_WORDS = [ ...UNIT_KEYS, ...TEN_KEYS, ...MAGNITUDE_KEYS];
 
 export const JOINERS = ['et'];
-export const DECIMALS = ['point', 'virgule'];
+export const DECIMALS = ['point', 'points', 'virgule'];
 
 export const PUNCTUATION = [
   '.',

@@ -47,6 +47,7 @@ var TEN = exports.TEN = {
   //  soixante: 60,
   septante: 70,
   octante: 80,
+  huitante: 80,
   nonante: 90
 };
 
@@ -90,7 +91,7 @@ var MAGNITUDE_KEYS = exports.MAGNITUDE_KEYS = (0, _keys2.default)(MAGNITUDE);
 var NUMBER_WORDS = exports.NUMBER_WORDS = [].concat((0, _toConsumableArray3.default)(UNIT_KEYS), (0, _toConsumableArray3.default)(TEN_KEYS), (0, _toConsumableArray3.default)(MAGNITUDE_KEYS));
 
 var JOINERS = exports.JOINERS = ['et'];
-var DECIMALS = exports.DECIMALS = ['point', 'virgule'];
+var DECIMALS = exports.DECIMALS = ['point', 'points', 'virgule'];
 
 var PUNCTUATION = exports.PUNCTUATION = ['.', ',', '\\', '#', '!', '$', '%', '^', '&', '/', '*', ';', ':', '{', '}', '=', '-', '_', '`', '~', '(', ')', ' '];
 

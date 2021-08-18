@@ -8,6 +8,11 @@ it('quarante six millions', () => {
   expect(wtn('quarante six millions')).to.equal(46000000);
 });
 
+
+it('huitante deux millions', () => {
+  expect(wtn('huitante deux millions')).to.equal(82000000);
+});
+
 it('cent', () => {
   expect(wtn('cent')).to.equal(100);
 });
@@ -179,6 +184,11 @@ it('quarante deux virgule cinq', () => {
 
 it('quarante deux point cinq', () => {
   expect(wtn('quarante deux point cinq')).to.equal(42.5);
+});
+
+
+it('quarante deux points cinq', () => {
+  expect(wtn('quarante deux points cinq')).to.equal(42.5);
 });
 
 it('dix virgule cinq', () => {
