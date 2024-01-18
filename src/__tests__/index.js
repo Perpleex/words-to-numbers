@@ -2,7 +2,7 @@
 import { expect } from 'chai';
 import wtn from '../';
 const { it } = global;
-/*
+
 it('one hundred', () => {
   expect(wtn('one hundred')).to.equal(100);
 });
@@ -331,10 +331,11 @@ it('two hundred ninety-five billion', () => {
 it('nine hundred ninety nine billion', () => {
   expect(wtn('nine hundred ninety nine billion')).to.eq(999000000000);
 });
-*/
+
 it('one thousand ninety nine billion', () => {
   expect(wtn('one thousand ninety nine billion')).to.eq(1099000000000);
 });
+
 it('two thousand ninety-five trillion', () => {
   expect(wtn('two thousand ninety-five trillion')).to.eq(2095000000000000);
 });
@@ -344,4 +345,3 @@ it('two thousand billion', () => {
 it('two thousand million', () => {
   expect(wtn('two thousand million')).to.eq(2000000000);
 });
-

@@ -23,7 +23,7 @@ const getNumber = region => {
         subRegionSum = 1;
         const tokensCount = tokens.length;
        if ( tokensCount === 1 && tokens[0].type === TOKEN_TYPE.MAGNITUDE && sum !== 0 && NUMBER[tokens[0].lowerCaseValue] > 999) {
-          if (!lastMagnitudeResult){
+          if (!lastMagnitudeResult || lastMagnitudeResult < NUMBER[tokens[0].lowerCaseValue]){
             sum *= NUMBER[tokens[0].lowerCaseValue];
             subRegionSum = 0;
             lastMagnitudeResult = sum;

@@ -22,28 +22,24 @@ const NOPE = 3;
 const canAddTokenToEndOfSubRegion = (subRegion, currentToken, { impliedHundreds }) => {
   const { tokens } = subRegion;
   const prevToken = tokens[0];
-  const firstToken = tokens[tokens.length - 1];
+  const prevprevToken = tokens[1];
   if (!prevToken) return true;
   if (
     prevToken.type === TOKEN_TYPE.MAGNITUDE &&
     currentToken.type === TOKEN_TYPE.UNIT &&
-    NUMBER[prevToken.lowerCaseValue] < 1000
+    (NUMBER[prevToken.lowerCaseValue] < 1000 || (prevprevToken && NUMBER[prevprevToken.lowerCaseValue] > NUMBER[prevToken.lowerCaseValue])
+    )
     ){
-      //console.log('bibi1 unit:', prevToken, currentToken);
       return true;
     }
   if (
     prevToken.type === TOKEN_TYPE.MAGNITUDE &&
     currentToken.type === TOKEN_TYPE.TEN &&
-    NUMBER[prevToken.lowerCaseValue] < 1000
+    (NUMBER[prevToken.lowerCaseValue] < 1000 || (prevprevToken && NUMBER[prevprevToken.lowerCaseValue] > NUMBER[prevToken.lowerCaseValue])
+    )
   ) {
-    //console.log('bibi ten:', prevToken, currentToken);
     return true;
   }
-  /*if (subRegion.type === TOKEN_TYPE.MAGNITUDE &&
-    currentToken.type === TOKEN_TYPE.MAGNITUDE &&
-    MAGNITUDE[firstToken.lowerCaseValue] > MAGNITUDE[currentToken.lowerCaseValue]
-    ) return true;*/
   if (
     impliedHundreds &&
     subRegion.type === TOKEN_TYPE.MAGNITUDE &&
