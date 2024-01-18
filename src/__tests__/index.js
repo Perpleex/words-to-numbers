@@ -199,6 +199,44 @@ it('trois virgule un quatre un cinq neuf deux six', () => {
   expect(wtn('trois virgule un quatre un cinq neuf deux six')).to.equal(3.1415926);
 });
 
+it('deux cent quatre vingt quinze milliard', () => {
+  expect(wtn('deux cent quatre vingt quinze milliard')).to.eq(295000000000);
+});
+
+ it('cent trente mille', () => {
+  expect(wtn('cent trente mille', { impliedHundreds: true })).to.eq(130000);
+ });
+
+/*
+ it('nineteen eighty thousand', () => {
+   expect(wtn('nineteen eighty thousand', { impliedHundreds: true })).to.eq(1980000);
+ });
+
+ it('one hundred two thousand', () => {
+   expect(wtn('one hundred two thousand')).to.eq(102000);
+ });
+
+ it('one hundred and two thousand', () => {
+   expect(wtn('one hundred and two thousand')).to.eq(102000);
+ });
+
+
+it('nine hundred ninety nine billion', () => {
+  expect(wtn('nine hundred ninety nine billion')).to.eq(999000000000);
+});
+it('one thousand ninety nine billion', () => {
+  expect(wtn('one thousand ninety nine billion')).to.eq(1099000000000);
+});
+it('two thousand ninety-five trillion', () => {
+  expect(wtn('two thousand ninety-five trillion')).to.eq(2095000000000000);
+});
+it('two thousand billion', () => {
+  expect(wtn('two thousand billion')).to.eq(2000000000000);
+});
+it('two thousand million', () => {
+  expect(wtn('two thousand million')).to.eq(2000000000);
+});
+
 /* testing for ordinal numbers */
 /*
 it('first', () => {
