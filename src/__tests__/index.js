@@ -2,7 +2,7 @@
 import { expect } from 'chai';
 import wtn from '../';
 const { it } = global;
-
+/*
 it('one hundred', () => {
   expect(wtn('one hundred')).to.equal(100);
 });
@@ -109,7 +109,6 @@ it('three point one four one five nine two six', () => {
   expect(wtn('three point one four one five nine two six')).to.equal(3.1415926);
 });
 
-/* testing for ordinal numbers */
 
 it('first', () => {
   expect(wtn('first')).to.equal(1);
@@ -303,20 +302,46 @@ it('seventeen dot two four dot twelve dot five', () => {
   expect(wtn('seventeen dot two four dot twelve dot five')).to.eq('17.24 dot 12.5');
 });
 
-// these dont work below fml
+it('two hundred ninety-five million', () => {
+  expect(wtn('two hundred ninety-five million')).to.eq(295000000);
+});
 
-// it('one thirty thousand', () => {
-//   expect(wtn('one thirty thousand', { impliedHundreds: true })).to.eq(130000);
-// });
+it('two hundred ninety-five billion', () => {
+  expect(wtn('two hundred ninety-five billion')).to.eq(295000000000);
+});
+ it('one thirty thousand', () => {
+  expect(wtn('one thirty thousand', { impliedHundreds: true })).to.eq(130000);
+ });
 
-// it('nineteen eighty thousand', () => {
-//   expect(wtn('nineteen eighty thousand', { impliedHundreds: true })).to.eq('19 80000');
-// });
+ it('nineteen eighty thousand', () => {
+   expect(wtn('nineteen eighty thousand', { impliedHundreds: true })).to.eq(1980000);
+ });
 
-// it('one hundred two thousand', () => {
-//   expect(wtn('one hundred two thousand')).to.eq(102000);
-// });
+ it('one hundred two thousand', () => {
+   expect(wtn('one hundred two thousand')).to.eq(102000);
+ });
 
-// it('one hundred and two thousand', () => {
-//   expect(wtn('one hundred and two thousand')).to.eq(102000);
-// });
+ it('one hundred and two thousand', () => {
+   expect(wtn('one hundred and two thousand')).to.eq(102000);
+ });
+
+ it('two thousand ninety-five billion', () => {
+  expect(wtn('two thousand ninety-five billion')).to.eq(2095000000000);
+});
+it('nine hundred ninety nine billion', () => {
+  expect(wtn('nine hundred ninety nine billion')).to.eq(999000000000);
+});
+*/
+it('one thousand ninety nine billion', () => {
+  expect(wtn('one thousand ninety nine billion')).to.eq(1099000000000);
+});
+it('two thousand ninety-five trillion', () => {
+  expect(wtn('two thousand ninety-five trillion')).to.eq(2095000000000000);
+});
+it('two thousand billion', () => {
+  expect(wtn('two thousand billion')).to.eq(2000000000000);
+});
+it('two thousand million', () => {
+  expect(wtn('two thousand million')).to.eq(2000000000);
+});
+

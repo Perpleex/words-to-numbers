@@ -10,6 +10,7 @@ import {
   DECIMALS,
   BLACKLIST_SINGULAR_WORDS,
   NUMBER,
+  MAGNITUDE,
 } from './constants';
 import fuzzyMatch from './fuzzy';
 
@@ -21,15 +22,28 @@ const NOPE = 3;
 const canAddTokenToEndOfSubRegion = (subRegion, currentToken, { impliedHundreds }) => {
   const { tokens } = subRegion;
   const prevToken = tokens[0];
+  const firstToken = tokens[tokens.length - 1];
   if (!prevToken) return true;
   if (
     prevToken.type === TOKEN_TYPE.MAGNITUDE &&
-    currentToken.type === TOKEN_TYPE.UNIT
-  ) return true;
+    currentToken.type === TOKEN_TYPE.UNIT &&
+    NUMBER[prevToken.lowerCaseValue] < 1000
+    ){
+      //console.log('bibi1 unit:', prevToken, currentToken);
+      return true;
+    }
   if (
     prevToken.type === TOKEN_TYPE.MAGNITUDE &&
-    currentToken.type === TOKEN_TYPE.TEN
-  ) return true;
+    currentToken.type === TOKEN_TYPE.TEN &&
+    NUMBER[prevToken.lowerCaseValue] < 1000
+  ) {
+    //console.log('bibi ten:', prevToken, currentToken);
+    return true;
+  }
+  /*if (subRegion.type === TOKEN_TYPE.MAGNITUDE &&
+    currentToken.type === TOKEN_TYPE.MAGNITUDE &&
+    MAGNITUDE[firstToken.lowerCaseValue] > MAGNITUDE[currentToken.lowerCaseValue]
+    ) return true;*/
   if (
     impliedHundreds &&
     subRegion.type === TOKEN_TYPE.MAGNITUDE &&
@@ -246,3 +260,4 @@ export default (text, options) => {
   const regions = matchRegions(tokens, options);
   return regions;
 };
+
