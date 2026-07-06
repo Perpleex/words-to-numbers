@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-expressions */
+ 
 import { expect } from 'chai';
 import wtn from '../';
 const { it } = global;
@@ -197,6 +197,137 @@ it('dix virgule cinq', () => {
 
 it('trois virgule un quatre un cinq neuf deux six', () => {
   expect(wtn('trois virgule un quatre un cinq neuf deux six')).to.equal(3.1415926);
+});
+
+it('dix virgule vingt cinq', () => {
+  expect(wtn('dix virgule vingt cinq')).to.equal(10.25);
+});
+
+it('trois virgule vingt cinq', () => {
+  expect(wtn('trois virgule vingt cinq')).to.equal(3.25);
+});
+
+it('trois virgule quatorze', () => {
+  expect(wtn('trois virgule quatorze')).to.equal(3.14);
+});
+
+it('cent vingt trois virgule quarante cinq', () => {
+  expect(wtn('cent vingt trois virgule quarante cinq')).to.equal(123.45);
+});
+
+it('trois virgule dix', () => {
+  expect(wtn('trois virgule dix')).to.equal(3.1);
+});
+
+// --- fractions ---
+it('un demi', () => {
+  expect(wtn('un demi')).to.equal('1/2');
+});
+
+it('trois quarts', () => {
+  expect(wtn('trois quarts')).to.equal('3/4');
+});
+
+it('deux tiers', () => {
+  expect(wtn('deux tiers')).to.equal('2/3');
+});
+
+it('trois cinquièmes', () => {
+  expect(wtn('trois cinquièmes')).to.equal('3/5');
+});
+
+it('un cinquième', () => {
+  expect(wtn('un cinquième')).to.equal('1/5');
+});
+
+it('sept dixièmes', () => {
+  expect(wtn('sept dixièmes')).to.equal('7/10');
+});
+
+it('trois sur quatre', () => {
+  expect(wtn('trois sur quatre')).to.equal('3/4');
+});
+
+it('le cinquième joueur reste inchangé', () => {
+  expect(wtn('le cinquième joueur')).to.equal('le cinquième joueur');
+});
+
+it("j'ai trois quarts et deux", () => {
+  expect(wtn("j'ai trois quarts et deux")).to.equal("j'ai 3/4 et 2");
+});
+
+// --- vingt / soixante en MAGNITUDE : 70-79, 80-89, 90-99 (français standard) ---
+it('quatre vingts (avec s)', () => {
+  expect(wtn('quatre vingts')).to.equal(80);
+});
+
+it('soixante douze', () => {
+  expect(wtn('soixante douze')).to.equal(72);
+});
+
+it('soixante quinze', () => {
+  expect(wtn('soixante quinze')).to.equal(75);
+});
+
+it('soixante seize', () => {
+  expect(wtn('soixante seize')).to.equal(76);
+});
+
+it('soixante dix sept', () => {
+  expect(wtn('soixante dix sept')).to.equal(77);
+});
+
+it('soixante dix neuf', () => {
+  expect(wtn('soixante dix neuf')).to.equal(79);
+});
+
+it('quatre vingt quinze', () => {
+  expect(wtn('quatre vingt quinze')).to.equal(95);
+});
+
+it('quatre vingt dix huit', () => {
+  expect(wtn('quatre vingt dix huit')).to.equal(98);
+});
+
+it('quatre vingt dix neuf', () => {
+  expect(wtn('quatre vingt dix neuf')).to.equal(99);
+});
+
+// --- variantes belges / suisses (aussi archaïques en France) ---
+it('septante', () => {
+  expect(wtn('septante')).to.equal(70);
+});
+
+it('septante et un', () => {
+  expect(wtn('septante et un')).to.equal(71);
+});
+
+it('septante neuf', () => {
+  expect(wtn('septante neuf')).to.equal(79);
+});
+
+it('huitante', () => {
+  expect(wtn('huitante')).to.equal(80);
+});
+
+it('huitante et un', () => {
+  expect(wtn('huitante et un')).to.equal(81);
+});
+
+it('octante', () => {
+  expect(wtn('octante')).to.equal(80);
+});
+
+it('octante deux', () => {
+  expect(wtn('octante deux')).to.equal(82);
+});
+
+it('nonante et un', () => {
+  expect(wtn('nonante et un')).to.equal(91);
+});
+
+it('nonante neuf', () => {
+  expect(wtn('nonante neuf')).to.equal(99);
 });
 
 it('deux cent quatre vingt quinze milliard', () => {

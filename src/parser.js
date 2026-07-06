@@ -1,4 +1,4 @@
-/* eslint-disable no-extra-parens */
+ 
 import {
   PUNCTUATION,
   NUMBER_WORDS,
@@ -21,16 +21,19 @@ const NOPE = 3;
 const canAddTokenToEndOfSubRegion = (subRegion, currentToken, { impliedHundreds }) => {
   const { tokens } = subRegion;
   const prevToken = tokens[0];
+  const prevprevToken = tokens[1];
   if (!prevToken) return true;
   if (
     prevToken.type === TOKEN_TYPE.MAGNITUDE &&
     currentToken.type === TOKEN_TYPE.UNIT &&
-    NUMBER[prevToken.lowerCaseValue] < 1000
+    (NUMBER[prevToken.lowerCaseValue] < 1000 ||
+      (prevprevToken && NUMBER[prevprevToken.lowerCaseValue] > NUMBER[prevToken.lowerCaseValue]))
   ) return true;
   if (
     prevToken.type === TOKEN_TYPE.MAGNITUDE &&
     currentToken.type === TOKEN_TYPE.TEN &&
-    NUMBER[prevToken.lowerCaseValue] < 1000
+    (NUMBER[prevToken.lowerCaseValue] < 1000 ||
+      (prevprevToken && NUMBER[prevprevToken.lowerCaseValue] > NUMBER[prevToken.lowerCaseValue]))
   ) return true;
   if (
     impliedHundreds &&
@@ -53,10 +56,13 @@ const canAddTokenToEndOfSubRegion = (subRegion, currentToken, { impliedHundreds 
     prevToken.type === TOKEN_TYPE.TEN &&
     currentToken.type === TOKEN_TYPE.UNIT
   ) return true;
-  /*if (
+  // Two magnitudes combine only if the left is a smaller multiplier of the right
+  // ("cent mille" = 100*1000); "cent vingt" (100+20) must stay additive.
+  // currentToken is LEFT of prevToken (right-to-left scan).
+  if (
     prevToken.type === TOKEN_TYPE.MAGNITUDE &&
     currentToken.type === TOKEN_TYPE.MAGNITUDE
-  ) return (prevToken.lowerCaseValue !== 'soixante' && prevToken.lowerCaseValue !== 'vingt' && prevToken.lowerCaseValue !== 'cent');*/
+  ) return NUMBER[currentToken.lowerCaseValue] < NUMBER[prevToken.lowerCaseValue];
   if (
     !impliedHundreds &&
     prevToken.type === TOKEN_TYPE.TEN &&
@@ -106,6 +112,15 @@ const getSubRegions = (region, options) => {
   let i = tokensCount - 1;
   while (i >= 0) {
     const token = region.tokens[i];
+    // A decimal marker is its own subRegion and a barrier: magnitude/HUNDRED
+    // type promotion must not leak left across it (it would mistype the marker).
+    if (token.type === TOKEN_TYPE.DECIMAL) {
+      currentSubRegion = { tokens: [token], type: TOKEN_TYPE.DECIMAL };
+      subRegions.unshift(currentSubRegion);
+      currentSubRegion = undefined;
+      i--;
+      continue;
+    }
     const { action, type, isHundred } = checkIfTokenFitsSubRegion(currentSubRegion, token, options);
     token.type = isHundred ? TOKEN_TYPE.HUNDRED : token.type;
     switch (action) {
@@ -228,7 +243,9 @@ const getTokenType = (chunk) => {
 
 export default (text, options) => {
   const tokens = text
-    .split(/(\w+|\s|[[:punct:]])/i)
+    // \w is ASCII-only and would split accented words; allow Latin accents + ñ
+    // so they stay a single token.
+    .split(/([\wàâäáãåéèêëíìîïóòôöõøúùûüýÿœæçñ]+|\s|[[:punct:]])/i)
     .reduce((acc, chunk) => {
       const unfuzzyChunk = chunk.length && options.fuzzy && !PUNCTUATION.includes(chunk) ?
         fuzzyMatch(chunk) :

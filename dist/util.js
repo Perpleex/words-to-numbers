@@ -1,10 +1,11 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var splice = exports.splice = function splice(str, index, count, add) {
-  var i = index;
+exports.splice = void 0;
+const splice = (str, index, count, add) => {
+  let i = index;
   if (i < 0) {
     i = str.length + i;
     if (i < 0) {
@@ -13,3 +14,4 @@ var splice = exports.splice = function splice(str, index, count, add) {
   }
   return str.slice(0, i) + (add || '') + str.slice(i + count);
 };
+exports.splice = splice;

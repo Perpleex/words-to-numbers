@@ -1,149 +1,136 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _typeof2 = require('babel-runtime/helpers/typeof');
-
-var _typeof3 = _interopRequireDefault(_typeof2);
-
-var _extends2 = require('babel-runtime/helpers/extends');
-
-var _extends3 = _interopRequireDefault(_extends2);
-
-var _util = require('./util');
-
-var _constants = require('./constants');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var getNumber = function getNumber(region) {
-  var sum = 0;
-  var lastMagnitudeResult = void 0;
-  var decimalReached = false;
-  var decimalUnits = [];
-  region.subRegions.forEach(function (subRegion) {
-    var tokens = subRegion.tokens;
-    var type = subRegion.type;
-
-    var subRegionSum = 0;
-    if (type === _constants.TOKEN_TYPE.DECIMAL) {
-      decimalReached = true;
-      return;
-    }
-    if (decimalReached) {
-      decimalUnits.push(subRegion);
-      return;
-    }
+exports.default = void 0;
+var _util = require("./util");
+var _constants = require("./constants");
+const sumSubRegions = subRegions => {
+  let sum = 0;
+  let lastMagnitudeResult;
+  subRegions.forEach(subRegion => {
+    const {
+      tokens,
+      type
+    } = subRegion;
+    let subRegionSum = 0;
     switch (type) {
       case _constants.TOKEN_TYPE.MAGNITUDE:
       case _constants.TOKEN_TYPE.HUNDRED:
         {
-          var _ret = function () {
-            subRegionSum = 1;
-            var tokensCount = tokens.length;
-            if (tokensCount === 1 && tokens[0].type === _constants.TOKEN_TYPE.MAGNITUDE && sum !== 0 && _constants.NUMBER[tokens[0].lowerCaseValue] > 999) {
-              if (!lastMagnitudeResult) {
-                sum *= _constants.NUMBER[tokens[0].lowerCaseValue];
-                subRegionSum = 0;
-                lastMagnitudeResult = sum;
-              } else {
-                var localDelta = sum - lastMagnitudeResult;
-                subRegionSum = localDelta * _constants.NUMBER[tokens[0].lowerCaseValue] - localDelta;
-                sum += subRegionSum;
-                subRegionSum = 0;
-                lastMagnitudeResult = sum;
-              }
-              return 'break';
+          subRegionSum = 1;
+          const tokensCount = tokens.length;
+          if (tokensCount === 1 && tokens[0].type === _constants.TOKEN_TYPE.MAGNITUDE && sum !== 0 && _constants.NUMBER[tokens[0].lowerCaseValue] > 999) {
+            if (!lastMagnitudeResult || lastMagnitudeResult < _constants.NUMBER[tokens[0].lowerCaseValue]) {
+              sum *= _constants.NUMBER[tokens[0].lowerCaseValue];
+              subRegionSum = 0;
+              lastMagnitudeResult = sum;
+            } else {
+              const localDelta = sum - lastMagnitudeResult;
+              subRegionSum = localDelta * _constants.NUMBER[tokens[0].lowerCaseValue] - localDelta;
+              sum += subRegionSum;
+              subRegionSum = 0;
+              lastMagnitudeResult = sum;
             }
-            tokens.reduce(function (acc, token, i) {
-              if (token.type === _constants.TOKEN_TYPE.HUNDRED) {
-                var _ret2 = function () {
-                  var tokensToAdd = tokensCount - 1 ? tokens.slice(i + 1) : [];
-                  tokensToAdd = tokensToAdd.filter(function (tokenToAdd, j) {
-                    return j === 0 || tokensToAdd[j - 1].type > tokenToAdd.type;
-                  });
-                  var tokensToAddSum = tokensToAdd.reduce(function (acc2, tokenToAdd) {
-                    return acc2 + _constants.NUMBER[tokenToAdd.lowerCaseValue];
-                  }, 0);
-                  return {
-                    v: acc.concat((0, _extends3.default)({}, tokens[i + 1], {
-                      numberValue: tokensToAddSum + _constants.NUMBER[token.lowerCaseValue] * 100
-                    }))
-                  };
-                }();
-
-                if ((typeof _ret2 === 'undefined' ? 'undefined' : (0, _typeof3.default)(_ret2)) === "object") return _ret2.v;
-              }
-              if (i > 0 && tokens[i - 1].type === _constants.TOKEN_TYPE.HUNDRED) return acc;
-              if (i > 1 && tokens[i - 1].type === _constants.TOKEN_TYPE.TEN && tokens[i - 2].type === _constants.TOKEN_TYPE.HUNDRED) return acc;
-              /*if (token.type === TOKEN_TYPE.UNIT && sum > 0){
-                let tempSum = sum;
-                sum = 0;
-                return acc.concat({ token, numberValue: NUMBER[token.lowerCaseValue] + tempSum });
-              }*/
-              return acc.concat({ token: token, numberValue: _constants.NUMBER[token.lowerCaseValue] });
-            }, []).forEach(function (_ref, index, accArray) {
-              var token = _ref.token;
-              var numberValue = _ref.numberValue;
-
-              if (index > 0 && accArray[index - 1].type !== _constants.TOKEN_TYPE.UNIT && token.type === _constants.TOKEN_TYPE.UNIT) {
-                subRegionSum += numberValue;
-              } else {
-                subRegionSum *= numberValue;
-              }
+            break;
+          }
+          tokens.reduce((acc, token, i) => {
+            if (token.type === _constants.TOKEN_TYPE.HUNDRED) {
+              let tokensToAdd = tokensCount - 1 ? tokens.slice(i + 1) : [];
+              tokensToAdd = tokensToAdd.filter((tokenToAdd, j) => j === 0 || tokensToAdd[j - 1].type > tokenToAdd.type);
+              const tokensToAddSum = tokensToAdd.reduce((acc2, tokenToAdd) => acc2 + _constants.NUMBER[tokenToAdd.lowerCaseValue], 0);
+              return acc.concat({
+                ...tokens[i + 1],
+                numberValue: tokensToAddSum + _constants.NUMBER[token.lowerCaseValue] * 100
+              });
+            }
+            if (i > 0 && tokens[i - 1].type === _constants.TOKEN_TYPE.HUNDRED) return acc;
+            if (i > 1 && tokens[i - 1].type === _constants.TOKEN_TYPE.TEN && tokens[i - 2].type === _constants.TOKEN_TYPE.HUNDRED) return acc;
+            return acc.concat({
+              token,
+              numberValue: _constants.NUMBER[token.lowerCaseValue]
             });
-            return 'break';
-          }();
-
-          if (_ret === 'break') break;
+          }, []).forEach(({
+            token,
+            numberValue
+          }, index, accArray) => {
+            if (index > 0 && accArray[index - 1].type !== _constants.TOKEN_TYPE.UNIT && token.type === _constants.TOKEN_TYPE.UNIT) {
+              subRegionSum += numberValue;
+            } else {
+              subRegionSum *= numberValue;
+            }
+          });
+          break;
         }
       case _constants.TOKEN_TYPE.UNIT:
       case _constants.TOKEN_TYPE.TEN:
         {
-          tokens.forEach(function (token) {
+          tokens.forEach(token => {
             subRegionSum += _constants.NUMBER[token.lowerCaseValue];
           });
           break;
         }
-      // no default
     }
     sum += subRegionSum;
   });
-
-  var currentDecimalPlace = 1;
-  decimalUnits.forEach(function (_ref2) {
-    var tokens = _ref2.tokens;
-
-    tokens.forEach(function (_ref3) {
-      var lowerCaseValue = _ref3.lowerCaseValue;
-
-      sum += _constants.NUMBER[lowerCaseValue] / Math.pow(10, currentDecimalPlace);
-      currentDecimalPlace += 1;
-    });
-  });
-
   return sum;
 };
-
-var replaceRegionsInText = function replaceRegionsInText(regions, text) {
-  var replaced = text;
-  var offset = 0;
-  regions.forEach(function (region) {
-    var length = region.end - region.start + 1;
-    var replaceWith = '' + getNumber(region);
+const getNumber = region => {
+  const intSubRegions = [];
+  const decimalSubRegions = [];
+  let decimalReached = false;
+  region.subRegions.forEach(subRegion => {
+    if (subRegion.type === _constants.TOKEN_TYPE.DECIMAL) {
+      decimalReached = true;
+      return;
+    }
+    if (decimalReached) {
+      decimalSubRegions.push(subRegion);
+    } else {
+      intSubRegions.push(subRegion);
+    }
+  });
+  let sum = sumSubRegions(intSubRegions);
+  if (decimalSubRegions.length) {
+    const decimalTokens = decimalSubRegions.reduce((acc, subRegion) => acc.concat(subRegion.tokens), []);
+    const digitByDigit = decimalTokens.every(token => {
+      const value = _constants.NUMBER[token.lowerCaseValue];
+      return value !== undefined && value < 10;
+    });
+    if (digitByDigit) {
+      let currentDecimalPlace = 1;
+      decimalTokens.forEach(({
+        lowerCaseValue
+      }) => {
+        sum += _constants.NUMBER[lowerCaseValue] / Math.pow(10, currentDecimalPlace);
+        currentDecimalPlace += 1;
+      });
+    } else {
+      const fractional = sumSubRegions(decimalSubRegions);
+      const digits = `${Math.round(Math.abs(fractional))}`.length;
+      sum += fractional / Math.pow(10, digits);
+    }
+  }
+  return sum;
+};
+const replaceRegionsInText = (regions, text) => {
+  let replaced = text;
+  let offset = 0;
+  regions.forEach(region => {
+    const length = region.end - region.start + 1;
+    const replaceWith = `${getNumber(region)}`;
     replaced = (0, _util.splice)(replaced, region.start + offset, length, replaceWith);
     offset -= length - replaceWith.length;
   });
   return replaced;
 };
-
-exports.default = function (_ref4) {
-  var regions = _ref4.regions;
-  var text = _ref4.text;
-
+var _default = ({
+  regions,
+  text
+}) => {
   if (!regions) return text;
   if (regions[0].end - regions[0].start === text.length - 1) return getNumber(regions[0]);
   return replaceRegionsInText(regions, text);
 };
+exports.default = _default;

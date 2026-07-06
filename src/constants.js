@@ -1,78 +1,11 @@
+import * as fr from './locales/fr';
+import * as en from './locales/en';
+import * as es from './locales/es';
 
-export const UNIT = {
-  zero: 0,
-  un: 1,
-  douze: 12,
-  deux: 2,
-  treize: 13,
-  trois: 3,
-  quatorze: 14,
-  quatre: 4,
-  quinze: 15,
-  cinq: 5,
-  seize: 16,
-  six: 6,
-  sept: 7,
-  huit: 8,
-  neuf: 9,
-  onze: 11,
-};
+const LOCALES = { fr, en, es };
+const DEFAULT_LOCALE = 'fr';
 
-export const TEN = {
-  dix: 10,
-//  vingt: 20,
-  trente: 30,
-  quarante: 40,
-  cinquante: 50,
-//  soixante: 60,
-  septante: 70,
-  octante: 80,
-  huitante: 80,
-  nonante: 90
-};
-
-export const MAGNITUDE = {
-  vingt: 20,
-  soixante: 60,
-  cent: 100,
-  cents: 100,
-  mille: 1000,
-  milles: 1000,
-  million: 1000000,
-  millions: 1000000,
-  milliard: 1000000000,
-  milliards: 1000000000,
-  billion: 1000000000000,
-  billions: 1000000000000,
-  trillion: 1000000000000000000,
-  trillions: 1000000000000000000,
-  quadrillion: 1000000000000000000000000,
-  quadrillions: 1000000000000000000000000,
-  quintillion: 1000000000000000000000000000000,
-  quintillions: 1000000000000000000000000000000,
-  sextillion: 1000000000000000000000000000000000000,
-  sextillions: 1000000000000000000000000000000000000,
-  septillion: 1000000000000000000000000000000000000000000,
-  septillions: 1000000000000000000000000000000000000000000,
-  octillion: 1000000000000000000000000000000000000000000000000,
-  octillions: 1000000000000000000000000000000000000000000000000,
-  nonillion: 1000000000000000000000000000000000000000000000000000000,
-  nonillions: 1000000000000000000000000000000000000000000000000000000,
-  decillion: 1000000000000000000000000000000000000000000000000000000000000,
-  decillions: 1000000000000000000000000000000000000000000000000000000000000,
-};
-
-export const NUMBER = { ...UNIT, ...TEN, ...MAGNITUDE };
-
-export const UNIT_KEYS = Object.keys(UNIT);
-export const TEN_KEYS = Object.keys(TEN);
-export const MAGNITUDE_KEYS = Object.keys(MAGNITUDE);
-
-export const NUMBER_WORDS = [ ...UNIT_KEYS, ...TEN_KEYS, ...MAGNITUDE_KEYS];
-
-export const JOINERS = ['et'];
-export const DECIMALS = ['point', 'points', 'virgule'];
-
+// Language-agnostic constants (never change with the locale).
 export const PUNCTUATION = [
   '.',
   ',',
@@ -107,6 +40,58 @@ export const TOKEN_TYPE = {
   HUNDRED: 4,
 };
 
-export const ALL_WORDS = [ ...NUMBER_WORDS, ...JOINERS, ...DECIMALS ];
+// Locale-dependent bindings. They are reassigned by setLocale(); thanks to ES
+// module live bindings, every module that imports them (parser, compiler,
+// fuzzy) sees the value for the locale selected on the current call.
+export let UNIT;
+export let TEN;
+export let MAGNITUDE;
+export let NUMBER;
+export let UNIT_KEYS;
+export let TEN_KEYS;
+export let MAGNITUDE_KEYS;
+export let NUMBER_WORDS;
+export let JOINERS;
+export let DECIMALS;
+export let ALL_WORDS;
+export let BLACKLIST_SINGULAR_WORDS;
+export let FRACTIONS;
+export let DIVIDERS;
 
-export const BLACKLIST_SINGULAR_WORDS = ['a'];
+export function getLocales() {
+  return Object.keys(LOCALES);
+}
+
+// Track locales we've already warned about, so an unsupported locale only logs
+// once (not on every call).
+const warnedLocales = new Set();
+
+// Select the active locale before a parse. Unknown/undefined -> default locale.
+// An explicitly-passed but unsupported locale warns once (undefined/null does
+// not: relying on the default locale is a legitimate use).
+export function setLocale(locale) {
+  if (locale != null && !LOCALES[locale] && !warnedLocales.has(locale)) {
+    warnedLocales.add(locale);
+    console.warn(
+      `words-to-numbers: unsupported locale "${locale}", falling back to "${DEFAULT_LOCALE}". Supported locales: ${Object.keys(LOCALES).join(', ')}.`
+    );
+  }
+  const data = LOCALES[locale] || LOCALES[DEFAULT_LOCALE];
+  UNIT = data.UNIT;
+  TEN = data.TEN;
+  MAGNITUDE = data.MAGNITUDE;
+  NUMBER = { ...UNIT, ...TEN, ...MAGNITUDE };
+  UNIT_KEYS = Object.keys(UNIT);
+  TEN_KEYS = Object.keys(TEN);
+  MAGNITUDE_KEYS = Object.keys(MAGNITUDE);
+  NUMBER_WORDS = [...UNIT_KEYS, ...TEN_KEYS, ...MAGNITUDE_KEYS];
+  JOINERS = data.JOINERS;
+  DECIMALS = data.DECIMALS;
+  FRACTIONS = data.FRACTIONS || {};
+  DIVIDERS = data.DIVIDERS || [];
+  ALL_WORDS = [...NUMBER_WORDS, ...JOINERS, ...DECIMALS, ...Object.keys(FRACTIONS), ...DIVIDERS];
+  BLACKLIST_SINGULAR_WORDS = data.BLACKLIST_SINGULAR_WORDS;
+}
+
+// Initialise with the default locale at module load.
+setLocale(DEFAULT_LOCALE);

@@ -1,34 +1,29 @@
 {
   "name": "words-to-numbers",
-  "description": "convert textual words to numbers with optional fuzzy text matching",
-  "version": "1.5.2",
+  "description": "convert textual words to numbers with optional fuzzy text matching (multilingual: fr, en, es)",
+  "version": "1.6.0",
   "license": "MIT",
-  "options": {
-    "mocha": "--require scripts/mocha_runner src/**/__tests__/**/*.js"
-  },
+  "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
-    "start": "babel --watch --plugins \"transform-runtime\" src --ignore __tests__ --out-dir ./dist",
-    "prepublish": "babel --plugins \"transform-runtime\" src --ignore __tests__ --out-dir ./dist",
-    "lint": "eslint ./src",
-    "lintfix": "eslint ./src --fix",
-    "testonly": "mocha --require scripts/mocha_runner src/**/__tests__/**/*.js",
-    "test": "npm run lint && npm run testonly",
-    "test-watch": "npm run testonly -- --watch --watch-extensions js"
+    "build": "babel src --ignore \"src/**/__tests__/**\" --out-dir ./dist",
+    "start": "babel --watch src --ignore \"src/**/__tests__/**\" --out-dir ./dist",
+    "prepare": "babel src --ignore \"src/**/__tests__/**\" --out-dir ./dist",
+    "lint": "eslint src",
+    "lintfix": "eslint src --fix",
+    "testonly": "mocha",
+    "test": "mocha",
+    "test-watch": "mocha --watch"
   },
   "devDependencies": {
-    "babel-cli": "6.x.x",
-    "babel-core": "6.x.x",
-    "babel-eslint": "4.x.x",
-    "babel-plugin-transform-runtime": "6.x.x",
-    "babel-polyfill": "6.x.x",
-    "babel-preset-es2015": "6.x.x",
-    "babel-preset-stage-2": "6.x.x",
-    "chai": "3.x.x",
-    "eslint": "1.7.x",
-    "eslint-plugin-babel": "2.x.x",
-    "its-set": "^1.1.5",
-    "mocha": "2.x.x",
-    "nodemon": "1.7.x"
+    "@babel/cli": "^7.24.0",
+    "@babel/core": "^7.24.0",
+    "@babel/preset-env": "^7.24.0",
+    "@babel/register": "^7.24.0",
+    "@eslint/js": "^9.0.0",
+    "chai": "^4.4.0",
+    "eslint": "^9.0.0",
+    "mocha": "^11.0.0"
   },
   "author": "Finn Fitzsimons <hello@finn.works>",
   "bugs": {
@@ -40,8 +35,11 @@
     "url": "https://github.com/finnfiddle/words-to-numbers.git"
   },
   "dependencies": {
-    "babel-runtime": "6.x.x",
     "clj-fuzzy": "^0.3.2",
     "its-set": "^1.1.5"
+  },
+  "overrides": {
+    "diff": "^9.0.0",
+    "serialize-javascript": "^7.0.7"
   }
 }
