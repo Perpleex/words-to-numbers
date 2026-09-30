@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.UNIT = exports.TEN = exports.MAGNITUDE = exports.JOINERS = exports.FRACTIONS = exports.DIVIDERS = exports.DECIMALS = exports.BLACKLIST_SINGULAR_WORDS = void 0;
+exports.UNIT = exports.TEN = exports.SCIENTIFIC = exports.PLACES = exports.MAGNITUDE = exports.JOINERS = exports.FRACTIONS = exports.DIVIDERS = exports.DECIMAL_SEPARATOR = exports.DECIMALS = exports.BLACKLIST_SINGULAR_WORDS = void 0;
 const UNIT = exports.UNIT = {
   zero: 0,
   first: 1,
@@ -81,6 +81,7 @@ const MAGNITUDE = exports.MAGNITUDE = {
 };
 const JOINERS = exports.JOINERS = ['and'];
 const DECIMALS = exports.DECIMALS = ['point', 'dot'];
+const DECIMAL_SEPARATOR = exports.DECIMAL_SEPARATOR = '.';
 const BLACKLIST_SINGULAR_WORDS = exports.BLACKLIST_SINGULAR_WORDS = ['a'];
 const FRACTIONS = exports.FRACTIONS = {
   half: 2,
@@ -104,4 +105,19 @@ const FRACTIONS = exports.FRACTIONS = {
   tenth: 10,
   tenths: 10
 };
+const PLACES = exports.PLACES = {
+  hundredths: 100,
+  thousandths: 1e3,
+  'ten-thousandths': 1e4,
+  'hundred-thousandths': 1e5,
+  millionths: 1e6,
+  'ten-millionths': 1e7,
+  'hundred-millionths': 1e8,
+  billionths: 1e9
+};
 const DIVIDERS = exports.DIVIDERS = ['over'];
+const SCIENTIFIC = exports.SCIENTIFIC = {
+  TIMES: ['times', 'multiplied by'],
+  POWER: ['to the', 'to the power of', 'raised to the', 'raised to the power of'],
+  MINUS: ['minus', 'negative']
+};

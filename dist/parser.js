@@ -7,18 +7,17 @@ exports.default = void 0;
 var _constants = require("./constants");
 var _fuzzy = _interopRequireDefault(require("./fuzzy"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+const LETTER = /[a-zàâäáãåéèêëíìîïóòôöõøúùûüýÿœæçñ]/i;
 const SKIP = 0;
 const ADD = 1;
 const START_NEW_REGION = 2;
 const NOPE = 3;
+const lastToken = (subRegion, back = 0) => subRegion.tokens[subRegion.tokens.length - 1 - back];
 const canAddTokenToEndOfSubRegion = (subRegion, currentToken, {
   impliedHundreds
 }) => {
-  const {
-    tokens
-  } = subRegion;
-  const prevToken = tokens[0];
-  const prevprevToken = tokens[1];
+  const prevToken = lastToken(subRegion);
+  const prevprevToken = lastToken(subRegion, 1);
   if (!prevToken) return true;
   if (prevToken.type === _constants.TOKEN_TYPE.MAGNITUDE && currentToken.type === _constants.TOKEN_TYPE.UNIT && (_constants.NUMBER[prevToken.lowerCaseValue] < 1000 || prevprevToken && _constants.NUMBER[prevprevToken.lowerCaseValue] > _constants.NUMBER[prevToken.lowerCaseValue])) return true;
   if (prevToken.type === _constants.TOKEN_TYPE.MAGNITUDE && currentToken.type === _constants.TOKEN_TYPE.TEN && (_constants.NUMBER[prevToken.lowerCaseValue] < 1000 || prevprevToken && _constants.NUMBER[prevprevToken.lowerCaseValue] > _constants.NUMBER[prevToken.lowerCaseValue])) return true;
@@ -37,7 +36,7 @@ const getSubRegionType = (subRegion, currentToken) => {
       type: currentToken.type
     };
   }
-  const prevToken = subRegion.tokens[0];
+  const prevToken = lastToken(subRegion);
   const isHundred = prevToken.type === _constants.TOKEN_TYPE.TEN && currentToken.type === _constants.TOKEN_TYPE.UNIT || prevToken.type === _constants.TOKEN_TYPE.TEN && currentToken.type === _constants.TOKEN_TYPE.TEN || prevToken.type === _constants.TOKEN_TYPE.UNIT && currentToken.type === _constants.TOKEN_TYPE.TEN && _constants.NUMBER[prevToken.lowerCaseValue] > 9 || prevToken.type === _constants.TOKEN_TYPE.UNIT && currentToken.type === _constants.TOKEN_TYPE.UNIT || prevToken.type === _constants.TOKEN_TYPE.TEN && currentToken.type === _constants.TOKEN_TYPE.UNIT && subRegion.type === _constants.TOKEN_TYPE.MAGNITUDE;
   if (subRegion.type === _constants.TOKEN_TYPE.MAGNITUDE) return {
     type: _constants.TOKEN_TYPE.MAGNITUDE,
@@ -79,6 +78,7 @@ const getSubRegions = (region, options) => {
   const subRegions = [];
   let currentSubRegion;
   const tokensCount = region.tokens.length;
+  const decimalIndex = region.tokens.findIndex(token => token.type === _constants.TOKEN_TYPE.DECIMAL);
   let i = tokensCount - 1;
   while (i >= 0) {
     const token = region.tokens[i];
@@ -87,7 +87,16 @@ const getSubRegions = (region, options) => {
         tokens: [token],
         type: _constants.TOKEN_TYPE.DECIMAL
       };
-      subRegions.unshift(currentSubRegion);
+      subRegions.push(currentSubRegion);
+      currentSubRegion = undefined;
+      i--;
+      continue;
+    }
+    if (decimalIndex !== -1 && i > decimalIndex && _constants.NUMBER[token.lowerCaseValue] === 0) {
+      subRegions.push({
+        tokens: [token],
+        type: token.type
+      });
       currentSubRegion = undefined;
       i--;
       continue;
@@ -102,7 +111,7 @@ const getSubRegions = (region, options) => {
       case ADD:
         {
           currentSubRegion.type = type;
-          currentSubRegion.tokens.unshift(token);
+          currentSubRegion.tokens.push(token);
           break;
         }
       case START_NEW_REGION:
@@ -111,13 +120,14 @@ const getSubRegions = (region, options) => {
             tokens: [token],
             type
           };
-          subRegions.unshift(currentSubRegion);
+          subRegions.push(currentSubRegion);
           break;
         }
     }
     i--;
   }
-  return subRegions;
+  subRegions.forEach(subRegion => subRegion.tokens.reverse());
+  return subRegions.reverse();
 };
 const canAddTokenToEndOfRegion = (region, currentToken, {
   impliedHundreds
@@ -126,6 +136,7 @@ const canAddTokenToEndOfRegion = (region, currentToken, {
     tokens
   } = region;
   const prevToken = tokens[tokens.length - 1];
+  if (region.hasDecimal && _constants.NUMBER[prevToken.lowerCaseValue] === 0) return true;
   if (!impliedHundreds && prevToken.type === _constants.TOKEN_TYPE.UNIT && currentToken.type === _constants.TOKEN_TYPE.UNIT && !region.hasDecimal) return false;
   if (!impliedHundreds && prevToken.type === _constants.TOKEN_TYPE.UNIT && currentToken.type === _constants.TOKEN_TYPE.TEN) return false;
   if (!impliedHundreds && prevToken.type === _constants.TOKEN_TYPE.TEN && currentToken.type === _constants.TOKEN_TYPE.TEN) return false;
@@ -214,16 +225,19 @@ const getTokenType = chunk => {
 };
 var _default = (text, options) => {
   const tokens = text.split(/([\wàâäáãåéèêëíìîïóòôöõøúùûüýÿœæçñ]+|\s|[[:punct:]])/i).reduce((acc, chunk) => {
-    const unfuzzyChunk = chunk.length && options.fuzzy && !_constants.PUNCTUATION.includes(chunk) ? (0, _fuzzy.default)(chunk) : chunk;
+    const unfuzzyChunk = chunk.length && options.fuzzy && !_constants.PUNCTUATION.includes(chunk) && LETTER.test(chunk) ? (0, _fuzzy.default)(chunk) : chunk;
     const start = acc.length ? acc[acc.length - 1].end + 1 : 0;
     const end = start + chunk.length;
-    return end !== start ? acc.concat({
-      start,
-      end: end - 1,
-      value: unfuzzyChunk,
-      lowerCaseValue: unfuzzyChunk.toLowerCase(),
-      type: getTokenType(unfuzzyChunk, options)
-    }) : acc;
+    if (end !== start) {
+      acc.push({
+        start,
+        end: end - 1,
+        value: unfuzzyChunk,
+        lowerCaseValue: unfuzzyChunk.toLowerCase(),
+        type: getTokenType(unfuzzyChunk, options)
+      });
+    }
+    return acc;
   }, []);
   const regions = matchRegions(tokens, options);
   return regions;

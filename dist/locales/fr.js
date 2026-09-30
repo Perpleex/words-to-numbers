@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.UNIT = exports.TEN = exports.MAGNITUDE = exports.JOINERS = exports.FRACTIONS = exports.DIVIDERS = exports.DECIMALS = exports.BLACKLIST_SINGULAR_WORDS = void 0;
+exports.UNIT = exports.TEN = exports.SCIENTIFIC = exports.PLACES = exports.MAGNITUDE = exports.JOINERS = exports.FRACTIONS = exports.DIVIDERS = exports.DECIMAL_SEPARATOR = exports.DECIMALS = exports.BLACKLIST_SINGULAR_WORDS = void 0;
 const UNIT = exports.UNIT = {
   zero: 0,
   zéro: 0,
@@ -66,6 +66,7 @@ const MAGNITUDE = exports.MAGNITUDE = {
 };
 const JOINERS = exports.JOINERS = ['et'];
 const DECIMALS = exports.DECIMALS = ['point', 'points', 'virgule'];
+const DECIMAL_SEPARATOR = exports.DECIMAL_SEPARATOR = ',';
 const BLACKLIST_SINGULAR_WORDS = exports.BLACKLIST_SINGULAR_WORDS = ['a'];
 const FRACTIONS = exports.FRACTIONS = {
   demi: 2,
@@ -94,4 +95,23 @@ const FRACTIONS = exports.FRACTIONS = {
   millième: 1000,
   millièmes: 1000
 };
+const PLACES = exports.PLACES = {
+  'dix-millième': 1e4,
+  'dix-millièmes': 1e4,
+  'cent-millième': 1e5,
+  'cent-millièmes': 1e5,
+  millionième: 1e6,
+  millionièmes: 1e6,
+  'dix-millionième': 1e7,
+  'dix-millionièmes': 1e7,
+  'cent-millionième': 1e8,
+  'cent-millionièmes': 1e8,
+  milliardième: 1e9,
+  milliardièmes: 1e9
+};
 const DIVIDERS = exports.DIVIDERS = ['sur'];
+const SCIENTIFIC = exports.SCIENTIFIC = {
+  TIMES: ['fois', 'multiplié par'],
+  POWER: ['puissance', 'à la puissance', 'exposant'],
+  MINUS: ['moins']
+};

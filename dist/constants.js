@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.UNIT_KEYS = exports.UNIT = exports.TOKEN_TYPE = exports.TEN_KEYS = exports.TEN = exports.PUNCTUATION = exports.NUMBER_WORDS = exports.NUMBER = exports.MAGNITUDE_KEYS = exports.MAGNITUDE = exports.JOINERS = exports.FRACTIONS = exports.DIVIDERS = exports.DECIMALS = exports.BLACKLIST_SINGULAR_WORDS = exports.ALL_WORDS = void 0;
+exports.UNIT_KEYS = exports.UNIT = exports.TOKEN_TYPE = exports.TEN_KEYS = exports.TEN = exports.SCIENTIFIC = exports.PUNCTUATION = exports.NUMBER_WORDS = exports.NUMBER = exports.MAGNITUDE_KEYS = exports.MAGNITUDE = exports.JOINERS = exports.FRACTIONS = exports.DIVIDERS = exports.DECIMAL_SEPARATOR = exports.DECIMALS = exports.BLACKLIST_SINGULAR_WORDS = exports.ALL_WORDS = void 0;
 exports.getLocales = getLocales;
 exports.setLocale = setLocale;
 var fr = _interopRequireWildcard(require("./locales/fr"));
@@ -38,6 +38,8 @@ let ALL_WORDS = exports.ALL_WORDS = void 0;
 let BLACKLIST_SINGULAR_WORDS = exports.BLACKLIST_SINGULAR_WORDS = void 0;
 let FRACTIONS = exports.FRACTIONS = void 0;
 let DIVIDERS = exports.DIVIDERS = void 0;
+let SCIENTIFIC = exports.SCIENTIFIC = void 0;
+let DECIMAL_SEPARATOR = exports.DECIMAL_SEPARATOR = void 0;
 function getLocales() {
   return Object.keys(LOCALES);
 }
@@ -62,9 +64,14 @@ function setLocale(locale) {
   exports.NUMBER_WORDS = NUMBER_WORDS = [...UNIT_KEYS, ...TEN_KEYS, ...MAGNITUDE_KEYS];
   exports.JOINERS = JOINERS = data.JOINERS;
   exports.DECIMALS = DECIMALS = data.DECIMALS;
-  exports.FRACTIONS = FRACTIONS = data.FRACTIONS || {};
+  exports.FRACTIONS = FRACTIONS = {
+    ...data.FRACTIONS,
+    ...data.PLACES
+  };
   exports.DIVIDERS = DIVIDERS = data.DIVIDERS || [];
-  exports.ALL_WORDS = ALL_WORDS = [...NUMBER_WORDS, ...JOINERS, ...DECIMALS, ...Object.keys(FRACTIONS), ...DIVIDERS];
+  exports.SCIENTIFIC = SCIENTIFIC = data.SCIENTIFIC;
+  exports.DECIMAL_SEPARATOR = DECIMAL_SEPARATOR = data.DECIMAL_SEPARATOR || '.';
+  exports.ALL_WORDS = ALL_WORDS = [...NUMBER_WORDS, ...JOINERS, ...DECIMALS, ...Object.keys(data.FRACTIONS || {}), ...DIVIDERS];
   exports.BLACKLIST_SINGULAR_WORDS = BLACKLIST_SINGULAR_WORDS = data.BLACKLIST_SINGULAR_WORDS;
 }
 setLocale(DEFAULT_LOCALE);
