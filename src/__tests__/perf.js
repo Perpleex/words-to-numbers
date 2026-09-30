@@ -11,21 +11,21 @@ const LARGE = SMALL * 4;
 const MAX_RATIO = 8;
 const RUNS = 5;
 
-const bestTime = (text) => {
+const bestTime = (text, options) => {
   let best = Infinity;
   for (let i = 0; i < RUNS; i++) {
     const start = process.hrtime.bigint();
-    wtn(text);
+    wtn(text, options);
     best = Math.min(best, Number(process.hrtime.bigint() - start));
   }
   return best;
 };
 
-const expectLinear = (build) => {
+const expectLinear = (build, options = {}) => {
   const small = build(SMALL);
   const large = build(LARGE);
-  wtn(small); // warm-up (JIT)
-  const ratio = bestTime(large) / bestTime(small);
+  wtn(small, options); // warm-up (JIT)
+  const ratio = bestTime(large, options) / bestTime(small, options);
   expect(ratio).to.be.below(MAX_RATIO);
 };
 
@@ -60,5 +60,9 @@ describe('performance linéaire', function () {
 
   it('notation scientifique répétée', () => {
     expectLinear((n) => repeat('soit deux virgule cinq fois dix puissance moins deux', n));
+  });
+
+  it("notation 'school'", () => {
+    expectLinear((n) => repeat('soit deux virgule cinq fois dix puissance moins deux et trente', n), { notation: 'school' });
   });
 });

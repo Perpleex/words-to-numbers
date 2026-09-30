@@ -65,6 +65,8 @@ export const MAGNITUDE = {
 
 export const JOINERS = ['et'];
 export const DECIMALS = ['point', 'points', 'virgule'];
+// Séparateur décimal de la notation 'school'.
+export const DECIMAL_SEPARATOR = ',';
 export const BLACKLIST_SINGULAR_WORDS = ['a'];
 
 // Fraction denominator words -> denominator value. None of these are French

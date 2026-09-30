@@ -89,6 +89,8 @@ export const MAGNITUDE = {
 
 export const JOINERS = ['y', 'e'];
 export const DECIMALS = ['coma', 'punto'];
+// Decimal separator of the 'school' notation.
+export const DECIMAL_SEPARATOR = ',';
 export const BLACKLIST_SINGULAR_WORDS = ['un', 'una'];
 
 // Fraction denominator words -> denominator value. None collide with the

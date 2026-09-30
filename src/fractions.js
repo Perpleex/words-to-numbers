@@ -6,6 +6,7 @@ import {
   DIVIDERS,
   DECIMALS,
 } from './constants';
+import { mark } from './notation';
 
 // Longest numerator scanned, in words. A spelled-out number rarely exceeds ~15
 // words ("neuf cent quatre vingt dix neuf mille neuf cent quatre vingt dix neuf").
@@ -72,7 +73,7 @@ export default function replaceFractions(text, options, toNumber) {
     result = result.replace(reDiv, (m, a, b) => {
       const n = resolve(a);
       const d = resolve(b);
-      return n !== null && d !== null ? `${n}/${d}` : m;
+      return n !== null && d !== null ? `${mark(n)}/${mark(d)}` : m;
     });
   }
 
@@ -101,8 +102,8 @@ export default function replaceFractions(text, options, toNumber) {
       // the exponent so it stays exact: 2.5 centièmes = Number("2.5e-2") = 0.025.
       // An integer numerator stays a fraction ("deux centièmes" -> 2/100).
       const exponent = powerOfTen(denom);
-      if (decimalMarker && exponent > 0) return `${Number(`${n}e-${exponent}`)}`;
-      return `${n}/${denom}`;
+      if (decimalMarker && exponent > 0) return mark(Number(`${n}e-${exponent}`));
+      return `${mark(n)}/${mark(denom)}`;
     });
   }
 

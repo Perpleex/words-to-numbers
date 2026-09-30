@@ -248,6 +248,10 @@ it('trois sur quatre', () => {
   expect(wtn('trois sur quatre')).to.equal('3/4');
 });
 
+it('trois quarts (fuzzy : les chiffres de la fraction ne sont pas réécrits)', () => {
+  expect(wtn('trois quarts', { fuzzy: true })).to.equal('3/4');
+});
+
 it('le cinquième joueur reste inchangé', () => {
   expect(wtn('le cinquième joueur')).to.equal('le cinquième joueur');
 });

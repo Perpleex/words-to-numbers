@@ -1,4 +1,5 @@
 import { TOKEN_TYPE, NUMBER } from './constants';
+import { mark } from './notation';
 
 // Sum number subRegions into an integer value (no decimal handling).
 const sumSubRegions = (subRegions) => {
@@ -141,7 +142,7 @@ const replaceRegionsInText = (regions, text) => {
   const parts = [];
   let cursor = 0;
   regions.forEach(region => {
-    parts.push(text.slice(cursor, region.start), `${getNumber(region)}`);
+    parts.push(text.slice(cursor, region.start), mark(getNumber(region)));
     cursor = region.end + 1;
   });
   parts.push(text.slice(cursor));

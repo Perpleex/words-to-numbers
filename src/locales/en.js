@@ -79,6 +79,8 @@ export const MAGNITUDE = {
 
 export const JOINERS = ['and'];
 export const DECIMALS = ['point', 'dot'];
+// Decimal separator of the 'school' notation.
+export const DECIMAL_SEPARATOR = '.';
 export const BLACKLIST_SINGULAR_WORDS = ['a'];
 
 // Fraction denominator words -> denominator value. Several singular forms

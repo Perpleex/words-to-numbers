@@ -13,6 +13,8 @@ import {
 } from './constants';
 import fuzzyMatch from './fuzzy';
 
+const LETTER = /[a-zàâäáãåéèêëíìîïóòôöõøúùûüýÿœæçñ]/i;
+
 const SKIP = 0;
 const ADD = 1;
 const START_NEW_REGION = 2;
@@ -267,7 +269,10 @@ export default (text, options) => {
     // push (not concat): concat copies the accumulator on every chunk, which
     // made tokenizing quadratic in the text length.
     .reduce((acc, chunk) => {
-      const unfuzzyChunk = chunk.length && options.fuzzy && !PUNCTUATION.includes(chunk) ?
+      // Only words are fuzzy-matched: digits and the notation markers of the
+      // fraction pass ("3/4") would otherwise be rewritten into number words.
+      const unfuzzyChunk = chunk.length && options.fuzzy && !PUNCTUATION.includes(chunk) &&
+        LETTER.test(chunk) ?
         fuzzyMatch(chunk) :
         chunk;
       const start = acc.length ? acc[acc.length - 1].end + 1 : 0;

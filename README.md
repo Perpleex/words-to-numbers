@@ -86,6 +86,26 @@ wordsToNumbers('three times ten to the minus three', {locale: 'en'}); //0.003
 wordsToNumbers('tres por diez elevado a menos tres', {locale: 'es'}); //0.003
 ```
 
+### Output notation
+
+`options.notation` chooses how numbers are written:
+
+- `'auto'` (default): JavaScript's own form, with an exponent from 1e21 and
+  below 1e-6 (`1e+21`, `2.5e-7`); a whole-text number is returned as a Number.
+- `'full'`: never an exponent, decimal point; always returns text.
+- `'school'`: numbers said with a power of ten keep the spoken form as
+  `a × 10ⁿ` (the mantissa is not normalized); every other number is written
+  in full. Locale decimal separator (comma in fr/es, point in en); always
+  returns text.
+
+```javascript
+wordsToNumbers('deux virgule cinq fois dix puissance moins sept'); //2.5e-7
+wordsToNumbers('deux virgule cinq fois dix puissance moins sept', {notation: 'full'}); //'0.00000025'
+wordsToNumbers('deux virgule cinq fois dix puissance moins sept', {notation: 'school'}); //'2,5 × 10⁻⁷'
+wordsToNumbers('vingt cinq fois dix puissance trois', {notation: 'school'}); //'25 × 10³'
+wordsToNumbers('trente mille', {notation: 'school'}); //'30000'
+```
+
 ## Ordinal Numbers
 
 ```javascript
