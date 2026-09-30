@@ -107,5 +107,24 @@ export const FRACTIONS = {
   centésimo: 100, centésimos: 100,
   milésimo: 1000, milésimos: 1000,
 };
+// Decimal places beyond the thousandth (RAE closed forms; long scale:
+// milmillonésimo = 10^-9).
+// Kept out of FRACTIONS so they stay out of the fuzzy dictionary, where they
+// would capture misspellings of hundred/cent/cien ("huntred" -> hundredths).
+// setLocale merges them into the fraction denominators.
+export const PLACES = {
+  diezmilésimo: 1e4, diezmilésimos: 1e4,
+  cienmilésimo: 1e5, cienmilésimos: 1e5,
+  millonésimo: 1e6, millonésimos: 1e6,
+  diezmillonésimo: 1e7, diezmillonésimos: 1e7,
+  cienmillonésimo: 1e8, cienmillonésimos: 1e8,
+  milmillonésimo: 1e9, milmillonésimos: 1e9,
+};
 // Explicit fraction divider: "tres sobre cuatro" -> 3/4.
 export const DIVIDERS = ['sobre'];
+// Scientific notation: "dos coma cinco por diez elevado a menos dos".
+export const SCIENTIFIC = {
+  TIMES: ['por', 'multiplicado por'],
+  POWER: ['elevado a', 'elevado a la', 'a la'],
+  MINUS: ['menos'],
+};

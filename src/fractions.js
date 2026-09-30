@@ -4,7 +4,15 @@ import {
   TEN_KEYS,
   FRACTIONS,
   DIVIDERS,
+  DECIMALS,
 } from './constants';
+
+// Longest numerator scanned, in words. A spelled-out number rarely exceeds ~15
+// words ("neuf cent quatre vingt dix neuf mille neuf cent quatre vingt dix neuf").
+const MAX_NUMERATOR_WORDS = 20;
+
+// 10^k -> k, or -1 when the denominator is not a power of ten.
+const powerOfTen = (denom) => (/^10*$/.test(`${denom}`) ? `${denom}`.length - 1 : -1);
 
 const byLengthDesc = (a, b) => b.length - a.length;
 const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -48,8 +56,10 @@ export default function replaceFractions(text, options, toNumber) {
   const numWord = '(?:' + alternation(NUMBER_WORDS) + ')';
   // Numerator = a lazy run of number words (space/hyphen separated). Lazy so the
   // trailing denominator (which may itself be a number word in English) is left
-  // for the denominator group to capture.
-  const numRun = numWord + '(?:[\\s-]+' + numWord + ')*?';
+  // for the denominator group to capture. Bounded: an unbounded run is rescanned
+  // from every start position of a long number-word sequence with no
+  // denominator, which is quadratic.
+  const numRun = numWord + '(?:[\\s-]+' + numWord + '){0,' + (MAX_NUMERATOR_WORDS - 1) + '}?';
 
   let result = text;
 
@@ -66,13 +76,17 @@ export default function replaceFractions(text, options, toNumber) {
     });
   }
 
-  // 2) Denominator word: "<num> <denominator>".
+  // 2) Denominator word: "<num> <denominator>". The numerator may be a decimal
+  // ("deux virgule cinq centièmes"): the optional group captures the marker.
   if (denomWords.length) {
+    const decimalPart = DECIMALS.length ?
+      '(?:' + numRun + '[\\s-]+(' + alternation(DECIMALS) + ')[\\s-]+)?' :
+      '()';
     const reFrac = new RegExp(
-      '(' + numRun + ')[\\s-]+(' + alternation(denomWords) + ')\\b',
+      '(' + decimalPart + numRun + ')[\\s-]+(' + alternation(denomWords) + ')\\b',
       'gi'
     );
-    result = result.replace(reFrac, (m, numerator, denomWord) => {
+    result = result.replace(reFrac, (m, numerator, decimalMarker, denomWord) => {
       const denom = FRACTIONS[denomWord.toLowerCase()];
       if (!denom) return m;
       // Ambiguity: a denominator that is also a cardinal (English ordinal form).
@@ -83,6 +97,11 @@ export default function replaceFractions(text, options, toNumber) {
       }
       const n = resolve(numerator);
       if (n === null) return m;
+      // Decimal numerator on a decimal place -> decimal value, shifted through
+      // the exponent so it stays exact: 2.5 centièmes = Number("2.5e-2") = 0.025.
+      // An integer numerator stays a fraction ("deux centièmes" -> 2/100).
+      const exponent = powerOfTen(denom);
+      if (decimalMarker && exponent > 0) return `${Number(`${n}e-${exponent}`)}`;
       return `${n}/${denom}`;
     });
   }

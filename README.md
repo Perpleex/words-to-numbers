@@ -58,6 +58,34 @@ wordsToNumbers('ten point five'); //10.5
 wordsToNumbers('three point one four one five nine two six'); //3.1415926
 ```
 
+### Decimal places
+
+An integer numerator stays a fraction; a decimal numerator (with a decimal
+marker, even "point zero") becomes a decimal number.
+
+```javascript
+wordsToNumbers('deux centièmes'); //'2/100'
+wordsToNumbers('deux virgule cinq centièmes'); //0.025
+wordsToNumbers('deux virgule zéro centièmes'); //0.02
+wordsToNumbers('two point five hundredths', {locale: 'en'}); //0.025
+wordsToNumbers('dos coma cinco centésimos', {locale: 'es'}); //0.025
+```
+
+Places up to 10^-9 are supported: dix-millième, cent-millième, millionième…
+milliardième (fr), ten-thousandths… billionths (en, plural only),
+diezmilésimo… milmillonésimo (es). Compound French and English places are
+hyphenated (`dix-millièmes`, `ten-thousandths`).
+
+### Scientific notation
+
+```javascript
+wordsToNumbers('deux virgule cinq fois dix puissance moins deux'); //0.025
+wordsToNumbers('dix puissance moins trois'); //0.001
+wordsToNumbers('six virgule zéro deux fois dix puissance vingt trois'); //6.02e+23
+wordsToNumbers('three times ten to the minus three', {locale: 'en'}); //0.003
+wordsToNumbers('tres por diez elevado a menos tres', {locale: 'es'}); //0.003
+```
+
 ## Ordinal Numbers
 
 ```javascript

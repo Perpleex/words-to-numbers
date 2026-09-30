@@ -18,10 +18,13 @@ const ADD = 1;
 const START_NEW_REGION = 2;
 const NOPE = 3;
 
+// SubRegion tokens are collected right-to-left with push (see getSubRegions),
+// so the most recently added (leftmost) token is the last one.
+const lastToken = (subRegion, back = 0) => subRegion.tokens[subRegion.tokens.length - 1 - back];
+
 const canAddTokenToEndOfSubRegion = (subRegion, currentToken, { impliedHundreds }) => {
-  const { tokens } = subRegion;
-  const prevToken = tokens[0];
-  const prevprevToken = tokens[1];
+  const prevToken = lastToken(subRegion);
+  const prevprevToken = lastToken(subRegion, 1);
   if (!prevToken) return true;
   if (
     prevToken.type === TOKEN_TYPE.MAGNITUDE &&
@@ -80,7 +83,7 @@ const getSubRegionType = (subRegion, currentToken) => {
   if (!subRegion) {
     return { type: currentToken.type };
   }
-  const prevToken = subRegion.tokens[0];
+  const prevToken = lastToken(subRegion);
   const isHundred = (
     (prevToken.type === TOKEN_TYPE.TEN && currentToken.type === TOKEN_TYPE.UNIT) ||
     (prevToken.type === TOKEN_TYPE.TEN && currentToken.type === TOKEN_TYPE.TEN) ||
@@ -109,6 +112,7 @@ const getSubRegions = (region, options) => {
   const subRegions = [];
   let currentSubRegion;
   const tokensCount = region.tokens.length;
+  const decimalIndex = region.tokens.findIndex((token) => token.type === TOKEN_TYPE.DECIMAL);
   let i = tokensCount - 1;
   while (i >= 0) {
     const token = region.tokens[i];
@@ -116,7 +120,15 @@ const getSubRegions = (region, options) => {
     // type promotion must not leak left across it (it would mistype the marker).
     if (token.type === TOKEN_TYPE.DECIMAL) {
       currentSubRegion = { tokens: [token], type: TOKEN_TYPE.DECIMAL };
-      subRegions.unshift(currentSubRegion);
+      subRegions.push(currentSubRegion);
+      currentSubRegion = undefined;
+      i--;
+      continue;
+    }
+    // In a decimal part, zero never combines with its neighbours ("zéro vingt"
+    // is not 0 × 20): it stands alone, so the compiler can keep leading zeros.
+    if (decimalIndex !== -1 && i > decimalIndex && NUMBER[token.lowerCaseValue] === 0) {
+      subRegions.push({ tokens: [token], type: token.type });
       currentSubRegion = undefined;
       i--;
       continue;
@@ -126,7 +138,7 @@ const getSubRegions = (region, options) => {
     switch (action) {
       case ADD: {
         currentSubRegion.type = type;
-        currentSubRegion.tokens.unshift(token);
+        currentSubRegion.tokens.push(token);
         break;
       }
       case START_NEW_REGION: {
@@ -134,19 +146,25 @@ const getSubRegions = (region, options) => {
           tokens: [token],
           type,
         };
-        subRegions.unshift(currentSubRegion);
+        subRegions.push(currentSubRegion);
         break;
       }
       // no default
     }
     i--;
   }
-  return subRegions;
+  // Built right-to-left with push (unshift is O(n) per call): restore reading
+  // order once at the end.
+  subRegions.forEach((subRegion) => subRegion.tokens.reverse());
+  return subRegions.reverse();
 };
 
 const canAddTokenToEndOfRegion = (region, currentToken, { impliedHundreds }) => {
   const { tokens } = region;
   const prevToken = tokens[tokens.length - 1];
+  // Leading zeros of a decimal part may precede any number word
+  // ("zéro virgule zéro cinquante" = 0.050).
+  if (region.hasDecimal && NUMBER[prevToken.lowerCaseValue] === 0) return true;
   if (
     !impliedHundreds &&
     prevToken.type === TOKEN_TYPE.UNIT &&
@@ -246,21 +264,24 @@ export default (text, options) => {
     // \w is ASCII-only and would split accented words; allow Latin accents + ñ
     // so they stay a single token.
     .split(/([\wàâäáãåéèêëíìîïóòôöõøúùûüýÿœæçñ]+|\s|[[:punct:]])/i)
+    // push (not concat): concat copies the accumulator on every chunk, which
+    // made tokenizing quadratic in the text length.
     .reduce((acc, chunk) => {
       const unfuzzyChunk = chunk.length && options.fuzzy && !PUNCTUATION.includes(chunk) ?
         fuzzyMatch(chunk) :
         chunk;
       const start = acc.length ? acc[acc.length - 1].end + 1 : 0;
       const end = start + chunk.length;
-      return end !== start ?
-        acc.concat({
+      if (end !== start) {
+        acc.push({
           start,
           end: end - 1,
           value: unfuzzyChunk,
           lowerCaseValue: unfuzzyChunk.toLowerCase(),
           type: getTokenType(unfuzzyChunk, options),
-        }) :
-        acc;
+        });
+      }
+      return acc;
     }, []);
   const regions = matchRegions(tokens, options);
   return regions;

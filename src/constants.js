@@ -57,6 +57,7 @@ export let ALL_WORDS;
 export let BLACKLIST_SINGULAR_WORDS;
 export let FRACTIONS;
 export let DIVIDERS;
+export let SCIENTIFIC;
 
 export function getLocales() {
   return Object.keys(LOCALES);
@@ -87,9 +88,10 @@ export function setLocale(locale) {
   NUMBER_WORDS = [...UNIT_KEYS, ...TEN_KEYS, ...MAGNITUDE_KEYS];
   JOINERS = data.JOINERS;
   DECIMALS = data.DECIMALS;
-  FRACTIONS = data.FRACTIONS || {};
+  FRACTIONS = { ...data.FRACTIONS, ...data.PLACES };
   DIVIDERS = data.DIVIDERS || [];
-  ALL_WORDS = [...NUMBER_WORDS, ...JOINERS, ...DECIMALS, ...Object.keys(FRACTIONS), ...DIVIDERS];
+  SCIENTIFIC = data.SCIENTIFIC;
+  ALL_WORDS = [...NUMBER_WORDS, ...JOINERS, ...DECIMALS, ...Object.keys(data.FRACTIONS || {}), ...DIVIDERS];
   BLACKLIST_SINGULAR_WORDS = data.BLACKLIST_SINGULAR_WORDS;
 }
 

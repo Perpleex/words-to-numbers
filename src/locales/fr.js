@@ -83,5 +83,24 @@ export const FRACTIONS = {
   centième: 100, centièmes: 100,
   millième: 1000, millièmes: 1000,
 };
+// Rangs décimaux au-delà du millième, composés sur mille/million/milliard.
+// Trait d'union obligatoire : "soixante dix millièmes" (70/1000) ne doit pas
+// être lu 60 + "dix millièmes".
+// Hors de FRACTIONS pour rester hors du dictionnaire fuzzy, où ils capteraient
+// les fautes de frappe sur cent/mille. setLocale les fusionne aux dénominateurs.
+export const PLACES = {
+  'dix-millième': 1e4, 'dix-millièmes': 1e4,
+  'cent-millième': 1e5, 'cent-millièmes': 1e5,
+  millionième: 1e6, millionièmes: 1e6,
+  'dix-millionième': 1e7, 'dix-millionièmes': 1e7,
+  'cent-millionième': 1e8, 'cent-millionièmes': 1e8,
+  milliardième: 1e9, milliardièmes: 1e9,
+};
 // Explicit fraction divider: "trois sur quatre" -> 3/4.
 export const DIVIDERS = ['sur'];
+// Scientific notation: "deux virgule cinq fois dix puissance moins deux".
+export const SCIENTIFIC = {
+  TIMES: ['fois', 'multiplié par'],
+  POWER: ['puissance', 'à la puissance', 'exposant'],
+  MINUS: ['moins'],
+};

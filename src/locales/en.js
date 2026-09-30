@@ -97,5 +97,27 @@ export const FRACTIONS = {
   ninth: 9, ninths: 9,
   tenth: 10, tenths: 10,
 };
+// Decimal places: plural only, since the singular "hundredth" is also an
+// ordinal ("two hundredth" = 200). Compounds are hyphenated so "two hundred
+// thousandths" (200/1000) is not read as 2 + "hundred thousandths".
+// Kept out of FRACTIONS so they stay out of the fuzzy dictionary, where they
+// would capture misspellings of hundred/cent/cien ("huntred" -> hundredths).
+// setLocale merges them into the fraction denominators.
+export const PLACES = {
+  hundredths: 100,
+  thousandths: 1e3,
+  'ten-thousandths': 1e4,
+  'hundred-thousandths': 1e5,
+  millionths: 1e6,
+  'ten-millionths': 1e7,
+  'hundred-millionths': 1e8,
+  billionths: 1e9,
+};
 // Explicit fraction divider: "three over four" -> 3/4.
 export const DIVIDERS = ['over'];
+// Scientific notation: "two point five times ten to the minus two".
+export const SCIENTIFIC = {
+  TIMES: ['times', 'multiplied by'],
+  POWER: ['to the', 'to the power of', 'raised to the', 'raised to the power of'],
+  MINUS: ['minus', 'negative'],
+};

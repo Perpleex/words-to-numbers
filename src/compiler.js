@@ -1,4 +1,3 @@
-import { splice } from './util';
 import { TOKEN_TYPE, NUMBER } from './constants';
 
 // Sum number subRegions into an integer value (no decimal handling).
@@ -37,10 +36,11 @@ const sumSubRegions = (subRegions) => {
             const tokensToAddSum = tokensToAdd.reduce((acc2, tokenToAdd) =>
                 acc2 + NUMBER[tokenToAdd.lowerCaseValue]
             , 0);
-            return acc.concat({
+            acc.push({
               ...tokens[i + 1],
               numberValue: tokensToAddSum + (NUMBER[token.lowerCaseValue] * 100),
             });
+            return acc;
           }
           if (i > 0 && tokens[i - 1].type === TOKEN_TYPE.HUNDRED) return acc;
           if (
@@ -53,7 +53,8 @@ const sumSubRegions = (subRegions) => {
             sum = 0;
             return acc.concat({ token, numberValue: NUMBER[token.lowerCaseValue] + tempSum });
           }*/
-          return acc.concat({ token, numberValue: NUMBER[token.lowerCaseValue] });
+          acc.push({ token, numberValue: NUMBER[token.lowerCaseValue] });
+          return acc;
         }, []).forEach(({ token, numberValue }, index, accArray) => {
           if (index > 0 && accArray[index - 1].type !== TOKEN_TYPE.UNIT && token.type === TOKEN_TYPE.UNIT){
             subRegionSum += numberValue;
@@ -78,6 +79,15 @@ const sumSubRegions = (subRegions) => {
   return sum;
 };
 
+// Parse "<integer>.<digits>" as one literal: adding digit / 10^k piecewise
+// accumulates float error (0.1 + 0.02 = 0.12000000000000001).
+const joinDecimal = (integer, digits) => {
+  const integerString = `${integer}`;
+  // Beyond 1e21 the integer prints in exponent form and cannot take a suffix.
+  if (/e/i.test(integerString)) return integer + Number(`0.${digits}`);
+  return Number(`${integerString}.${digits}`);
+};
+
 const getNumber = region => {
   const intSubRegions = [];
   const decimalSubRegions = [];
@@ -97,9 +107,10 @@ const getNumber = region => {
   let sum = sumSubRegions(intSubRegions);
 
   if (decimalSubRegions.length) {
-    const decimalTokens = decimalSubRegions.reduce(
-      (acc, subRegion) => acc.concat(subRegion.tokens), []
-    );
+    const decimalTokens = [];
+    decimalSubRegions.forEach((subRegion) => {
+      subRegion.tokens.forEach((token) => decimalTokens.push(token));
+    });
     // Digit-by-digit when every fractional word is a single figure 0-9 (keeps
     // "un quatre" = .14); otherwise read the fractional part as a whole number
     // ("vingt cinq" = .25). Test by value: units get retyped to HUNDRED upstream.
@@ -107,32 +118,34 @@ const getNumber = region => {
       const value = NUMBER[token.lowerCaseValue];
       return value !== undefined && value < 10;
     });
-    if (digitByDigit) {
-      let currentDecimalPlace = 1;
-      decimalTokens.forEach(({ lowerCaseValue }) => {
-        sum += NUMBER[lowerCaseValue] / Math.pow(10, currentDecimalPlace);
-        currentDecimalPlace += 1;
-      });
-    } else {
-      const fractional = sumSubRegions(decimalSubRegions);
-      const digits = `${Math.round(Math.abs(fractional))}`.length;
-      sum += fractional / Math.pow(10, digits);
-    }
+    // Leading zeros are kept in the whole-number reading too: "zéro vingt cinq"
+    // = .025 (zero is always a subRegion of its own, see the parser).
+    let leadingZeros = 0;
+    while (
+      leadingZeros < decimalSubRegions.length - 1 &&
+      NUMBER[decimalSubRegions[leadingZeros].tokens[0].lowerCaseValue] === 0
+    ) leadingZeros += 1;
+    const fractionalDigits = digitByDigit ?
+      decimalTokens.map(({ lowerCaseValue }) => NUMBER[lowerCaseValue]).join('') :
+      '0'.repeat(leadingZeros) +
+        `${Math.round(Math.abs(sumSubRegions(decimalSubRegions.slice(leadingZeros))))}`;
+    sum = joinDecimal(sum, fractionalDigits);
   }
 
   return sum;
 };
 
+// Regions are ordered and non-overlapping: rebuild the text in one pass
+// (splicing the whole string per region was quadratic).
 const replaceRegionsInText = (regions, text) => {
-  let replaced = text;
-  let offset = 0;
+  const parts = [];
+  let cursor = 0;
   regions.forEach(region => {
-    const length = region.end - region.start + 1;
-    const replaceWith = `${getNumber(region)}`;
-    replaced = splice(replaced, region.start + offset, length, replaceWith);
-    offset -= length - replaceWith.length;
+    parts.push(text.slice(cursor, region.start), `${getNumber(region)}`);
+    cursor = region.end + 1;
   });
-  return replaced;
+  parts.push(text.slice(cursor));
+  return parts.join('');
 };
 
 export default ({ regions, text }) => {
